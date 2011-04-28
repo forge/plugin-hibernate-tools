@@ -2,6 +2,7 @@ package org.hibernate.forge.plugin;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import javax.inject.Inject;
@@ -25,6 +26,9 @@ import org.jboss.seam.forge.shell.plugins.RequiresFacet;
 import org.jboss.seam.forge.shell.plugins.RequiresProject;
 import org.jboss.seam.forge.shell.plugins.Topic;
 import org.jboss.seam.forge.spec.jpa.PersistenceFacet;
+import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.PersistenceDescriptor;
+import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.PersistenceUnitDef;
+import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.Property;
 
 @Topic("Project")
 @RequiresProject
@@ -65,6 +69,23 @@ public class GenerateEntities implements Plugin
       JDBCMetaDataConfiguration jmdc = new JDBCMetaDataConfiguration();
 
       Properties properties = new Properties();
+
+      shell.println("getting persistence facet.");
+      
+      final PersistenceDescriptor pDescriptor = project.getFacet(PersistenceFacet.class).getConfig();
+      final List<PersistenceUnitDef> list = pDescriptor.listUnits();
+      for (final PersistenceUnitDef pud : list) {
+        final List<Property> props = pud.getProperties();
+        shell.println("Persistence Unit Name: " + pud.getName());
+        for (final Property prop : props) {
+          shell.println("prop name: " + prop.getName() + "... prop value: " + prop.getValue());
+          if (prop.getName() != null && prop.getValue() != null) {
+            properties.setProperty(prop.getName(), prop.getValue().toString());
+          }
+        }
+        shell.println("...");
+      }
+/*
       String driverClass = (shell.getProperty("hibernate.connection.driver_class") == null ? "org.hsqldb.jdbcDriver"
                : shell
                         .getProperty("hibernate.connection.driver_class")).toString();
@@ -76,12 +97,14 @@ public class GenerateEntities implements Plugin
                : shell
                         .getProperty("hibernate.connection.url")).toString();
 
+
       properties.setProperty("hibernate.connection.driver_class", driverClass);
       properties.setProperty("hibernate.connection.username", username);
       properties.setProperty("hibernate.connection.password", password);
       properties.setProperty("hibernate.connection.url", connectionUrl);
-
+*/
       jmdc.setProperties(properties);
+      
       DefaultReverseEngineeringStrategy defaultStrategy = new DefaultReverseEngineeringStrategy();
       ReverseEngineeringStrategy strategy = defaultStrategy;
 
@@ -94,9 +117,7 @@ public class GenerateEntities implements Plugin
 
       defaultStrategy.setSettings(revengsettings);
       strategy.setSettings(revengsettings);
-
       jmdc.setReverseEngineeringStrategy(strategy);
-
       jmdc.readFromJDBC();
 
       Iterator<?> iter = jmdc.getTableMappings();
@@ -110,7 +131,6 @@ public class GenerateEntities implements Plugin
       shell.println("Found " + count + " tables in datasource");
 
       POJOExporter pj = new POJOExporter(jmdc, java.getSourceFolder().getUnderlyingResourceObject());
-
       ArtifactCollector artifacts = new ArtifactCollector()
       {
          @Override
@@ -121,9 +141,7 @@ public class GenerateEntities implements Plugin
          }
       };
       pj.setArtifactCollector(artifacts);
-
       pj.start();
-
       shell.println("Generated " + artifacts.getFileCount("java") + " java files.");
    }
 }
