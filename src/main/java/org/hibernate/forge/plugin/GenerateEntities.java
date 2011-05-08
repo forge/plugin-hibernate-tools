@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.hibernate.HibernateException;
 import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
@@ -22,6 +23,7 @@ import org.jboss.forge.project.facets.JavaSourceFacet;
 import org.jboss.forge.resources.Resource;
 import org.jboss.forge.shell.PromptType;
 import org.jboss.forge.shell.Shell;
+import org.jboss.forge.shell.ShellColor;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.DefaultCommand;
 import org.jboss.forge.shell.plugins.Help;
@@ -113,7 +115,14 @@ public class GenerateEntities implements Plugin
       strategy.setSettings(revengsettings);
       jmdc.setReverseEngineeringStrategy(strategy);
 
-      jmdc.readFromJDBC();
+      try {
+         jmdc.readFromJDBC();
+      } catch(HibernateException he) {
+         if(he.getMessage().contains(jdbcDriver)) {
+            shell.println(ShellColor.RED, "Driver class: " + jdbcDriver + " could not be loaded. Check that the driver jar(s) are in $FORGE_HOME/lib.");
+         }
+         throw he;
+      }
 
       Iterator<?> iter = jmdc.getTableMappings();
       int count = 0;
