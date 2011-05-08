@@ -18,26 +18,26 @@ and it will use JDBC to connect to the database and generate JPA entities.
 Commands
 ========
 
-[generate-entities] - Generate entities from a database.
+[generate-entities] - Generate entities from a database.  
 
-[OPTIONS]
-    [--table] - Table pattern to include. 'CUSTOMER' for specific table, 'CUST*' for substring match and '*' for all (the default)
-    [--schema] - Schema pattern to include. Same syntax as for table
-    [--catalog] - Catalog pattern to include. Same syntax as for table
-    [--entityPackage] - Package to use for generated entities.
-    [--driver] - Class name for JDBC driver
-    [--url] - URL for JDBC connection
-    [--user] - Username for JDBC connection
-    [--password] - Password for JDBC connection
-    [--detectManyToMany] - Detect many to many associations between tables.
-    [--detectOneToOne] - Detect one-to-one associations between tables.
-    [--detectOptimisticLock] - Detect optimistic locking tables, i.e. if a table has a column named 'version' with a numeric type optimistic locking will be setup for that table.
+[OPTIONS]  
+    [--table] - Table pattern to include. 'CUSTOMER' for specific table, 'CUST*' for substring match and '*' for all (the default)  
+    [--schema] - Schema pattern to include. Same syntax as for table  
+    [--catalog] - Catalog pattern to include. Same syntax as for table  
+    [--entityPackage] - Package to use for generated entities.  
+    [--driver] - Class name for JDBC driver  
+    [--url] - URL for JDBC connection  
+    [--user] - Username for JDBC connection  
+    [--password] - Password for JDBC connection  
+    [--detectManyToMany] - Detect many to many associations between tables.  
+    [--detectOneToOne] - Detect one-to-one associations between tables.  
+    [--detectOptimisticLock] - Detect optimistic locking tables, i.e. if a table has a column named 'version' with a numeric type optimistic locking will be setup for that table.  
 
 TODO's
 ======
 
- * Use "connection profiles" instead having users to specify jdbc
-   details everytime.
+ * Use "connection profiles" instead having users to specify jdbc  
+   details everytime.  
 
  * Avoid shading so can remove the Loader class to circumvent what
    looks like a bug in Weld for scanning shaded Freemarker jars.
