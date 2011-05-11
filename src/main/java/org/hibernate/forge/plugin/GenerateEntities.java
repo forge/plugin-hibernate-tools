@@ -33,6 +33,7 @@ import org.jboss.forge.shell.plugins.RequiresFacet;
 import org.jboss.forge.shell.plugins.RequiresProject;
 import org.jboss.forge.shell.plugins.Topic;
 import org.jboss.forge.spec.javaee.PersistenceFacet;
+import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.Property;
 
 @Topic("Project")
 @RequiresProject
@@ -74,6 +75,8 @@ public class GenerateEntities implements Plugin
          final String jdbcURL, 
          @Option(name = "user", help="Username for JDBC connection", defaultValue = "sa")
          final String jdbcUsername, 
+         @Option(name = "dialect", help="Dialect to use for database", required = false)
+         String dialect,
          @Option(name = "password", help="Password for JDBC connection")
          final String jdbcPassword, 
          @Option(name = "detectManyToMany", help="Detect many to many associations between tables.", defaultValue = "true")
@@ -85,6 +88,22 @@ public class GenerateEntities implements Plugin
    {
       PersistenceFacet jpa = project.getFacet(PersistenceFacet.class);
 
+      if(dialect == null) {
+         if(jpa.getConfig().listUnits().size()>0) {
+            List<Property> properties = jpa.getConfig().listUnits().get(0).getProperties();
+            for (Property property : properties) {
+               if(property.getName().equals("hibernate.dialect")) {
+                  dialect = (String) property.getValue();
+                  break;
+               }
+            }
+         }
+         if(dialect==null) {
+            shell.println(ShellColor.RED, "Need to specify dialect.");
+            return;
+         }
+      } 
+      
       JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
 
       if (entityPackage == null)
@@ -99,7 +118,8 @@ public class GenerateEntities implements Plugin
       properties.setProperty("hibernate.connection.driver_class", jdbcDriver);
       properties.setProperty("hibernate.connection.username", jdbcUsername);
 
-      properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+      
+      properties.setProperty("hibernate.dialect", dialect);
       properties.setProperty("hibernate.connection.password", jdbcPassword == null ? "" : jdbcPassword);
       properties.setProperty("hibernate.connection.url", jdbcURL);
 
