@@ -155,6 +155,10 @@ public class GenerateEntities implements Plugin
       shell.println("Found " + count + " tables in datasource");
 
       POJOExporter pj = new POJOExporter(jmdc, java.getSourceFolder().getUnderlyingResourceObject());
+      Properties pojoProperties = new Properties();
+      pojoProperties.setProperty("java5","true");
+      pojoProperties.setProperty("ejb3", "true");
+      pj.setProperties(pojoProperties);
 
       ArtifactCollector artifacts = new ArtifactCollector()
       {
