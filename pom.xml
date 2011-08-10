@@ -10,19 +10,21 @@
   </properties>
   <dependencies>
     <dependency>
-      <groupId>org.jboss.forge</groupId>
-      <artifactId>forge-shell-api</artifactId>
-      <version>${forge.api.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-tools</artifactId>
       <version>3.4.0.CR2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.forge</groupId>
+      <artifactId>forge-shell-api</artifactId>
+      <version>${forge.api.version}</version>
+		<scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge</groupId>
       <artifactId>forge-javaee-api</artifactId>
       <version>${forge.api.version}</version>
+		<scope>provided</scope>
     </dependency>
   </dependencies>
   <repositories>
@@ -39,30 +41,6 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.4</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-              	
-                <includes>
-                  <include>antlr:*</include>
-                  <include>org.hibernate:*</include>
-                  <include>dom4j:*</include>
-                  <include>freemarker:*</include>
-                </includes>
-              
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
