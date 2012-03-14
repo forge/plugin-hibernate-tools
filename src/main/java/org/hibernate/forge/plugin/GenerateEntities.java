@@ -247,7 +247,7 @@ public class GenerateEntities implements Plugin
 
       POJOExporter pj = new POJOExporter(jmdc, java.getSourceFolder().getUnderlyingResourceObject());
       Properties pojoProperties = new Properties();
-      pojoProperties.setProperty("java5", "true");
+      pojoProperties.setProperty("jdk5", "true");
       pojoProperties.setProperty("ejb3", "true");
       pj.setProperties(pojoProperties);
 
