@@ -14,7 +14,7 @@ public class GenerateEntitiesPluginTest extends AbstractShellTest  {
    public static JavaArchive getDeployment()
    {
       return AbstractShellTest.getDeployment()
-               .addPackages(true, GenerateEntities.class.getPackage());
+               .addPackages(true, GenerateEntitiesPlugin.class.getPackage());
    }
    
 	@Test

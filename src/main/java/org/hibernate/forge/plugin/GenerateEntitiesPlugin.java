@@ -43,7 +43,7 @@ import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.Property;
 @Alias("generate-entities")
 @RequiresFacet(PersistenceFacet.class)
 @Help("Generate entities from a database.")
-public class GenerateEntities implements Plugin
+public class GenerateEntitiesPlugin implements Plugin
 {
 
    private static final String TABLE_ID = "table";
@@ -115,10 +115,10 @@ public class GenerateEntities implements Plugin
             @Option(name = URL_ID, help = URL_HELP, required = false) String jdbcURL,
             @Option(name = USER_ID, help = USER_HELP, required = false) String jdbcUsername,
             @Option(name = PASSWORD_ID, help = PASSWORD_HELP, required = false) String jdbcPassword,
-            @Option(name = DIALECT_ID, help = DIALECT_HELP, required = false) String dialect,
-            @Option(name = DETECT_MANY_TO_MANY_ID, help = DETECT_MANY_TO_MANY_HELP, required = false) Boolean detectManyToMany,
-            @Option(name = DETECT_ONE_TO_ONE_ID, help = DETECT_ONE_TO_ONE_HELP, required = false) Boolean detectOneToOne,
-            @Option(name = DETECT_OPTIMISTIC_LOCK_ID, help = DETECT_OPTIMISTIC_LOCK_HELP, required = false) Boolean detectOptimisticLock)
+            @Option(name = DIALECT_ID, help = DIALECT_HELP, required = false) String dialect) //,
+//            @Option(name = DETECT_MANY_TO_MANY_ID, help = DETECT_MANY_TO_MANY_HELP, required = false, defaultValue = "null") Boolean detectManyToMany,
+//            @Option(name = DETECT_ONE_TO_ONE_ID, help = DETECT_ONE_TO_ONE_HELP, required = false, defaultValue = "null") Boolean detectOneToOne,
+//            @Option(name = DETECT_OPTIMISTIC_LOCK_ID, help = DETECT_OPTIMISTIC_LOCK_HELP, required = false, defaultValue = "null") Boolean detectOptimisticLock)
             throws Exception
    {
       
@@ -132,9 +132,9 @@ public class GenerateEntities implements Plugin
       jdbcURL = jdbcURL == null ? config.getString(URL_ID) : jdbcURL;
       jdbcUsername = jdbcUsername == null ? config.getString(USER_ID) : jdbcUsername;
       dialect = dialect == null ? config.getString(DIALECT_ID) : dialect;
-      detectManyToMany = detectManyToMany == null ? config.getBoolean(DETECT_MANY_TO_MANY_ID) : detectManyToMany;
-      detectOneToOne = detectOneToOne == null ? config.getBoolean(DETECT_ONE_TO_ONE_ID) : detectOneToOne;
-      detectOptimisticLock = detectOptimisticLock == null ? config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID) : detectOptimisticLock;
+      Boolean detectManyToMany = config.getBoolean(DETECT_MANY_TO_MANY_ID);
+      Boolean detectOneToOne = config.getBoolean(DETECT_ONE_TO_ONE_ID);
+      Boolean detectOptimisticLock = config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID);
       
       PersistenceFacet jpa = project.getFacet(PersistenceFacet.class);
 
@@ -183,6 +183,8 @@ public class GenerateEntities implements Plugin
 
       DefaultReverseEngineeringStrategy defaultStrategy = new DefaultReverseEngineeringStrategy();
       ReverseEngineeringStrategy strategy = defaultStrategy;
+      
+      shell.println("detect many to many: " + false);
 
       ReverseEngineeringSettings revengsettings = new ReverseEngineeringSettings(strategy)
                .setDefaultPackageName(entityPackage).setDetectManyToMany(detectManyToMany)
@@ -281,10 +283,7 @@ public class GenerateEntities implements Plugin
             @Option(name = PATH_TO_DRIVER_ID, help = PATH_TO_DRIVER_HELP, required = false) String pathToDriverJar,
             @Option(name = URL_ID, help = URL_HELP, required = false) String jdbcURL,
             @Option(name = USER_ID, help = USER_HELP, required = false) String jdbcUsername,
-            @Option(name = DIALECT_ID, help = DIALECT_HELP, required = false) String dialect,
-            @Option(name = DETECT_MANY_TO_MANY_ID, help = DETECT_MANY_TO_MANY_HELP, required = false) Boolean detectManyToMany,
-            @Option(name = DETECT_ONE_TO_ONE_ID, help = DETECT_ONE_TO_ONE_HELP, required = false) Boolean detectOneToOne,
-            @Option(name = DETECT_OPTIMISTIC_LOCK_ID, help = DETECT_OPTIMISTIC_LOCK_HELP, required = false) Boolean detectOptimisticLock)
+            @Option(name = DIALECT_ID, help = DIALECT_HELP, required = false) String dialect)
    {
       Configuration config = configuration.getScopedConfiguration(ConfigurationScope.PROJECT);
       tableFilter = tableFilter == null ? config.getString(TABLE_ID) : tableFilter;
@@ -305,20 +304,20 @@ public class GenerateEntities implements Plugin
       jdbcUsername = shell.prompt(USER_HELP, jdbcUsername == null ? USER_DEFAULT : jdbcUsername);
       dialect = dialect == null ? config.getString(DIALECT_ID) : dialect;
       dialect = shell.prompt(DIALECT_HELP, dialect == null ? DIALECT_DEFAULT : dialect);
-      detectManyToMany = 
-               detectManyToMany == null ? 
-               config.containsKey(DETECT_MANY_TO_MANY_ID) ? config.getBoolean(DETECT_MANY_TO_MANY_ID) : DETECT_MANY_TO_MANY_DEFAULT : 
-               detectManyToMany;
+      Boolean detectManyToMany = 
+               config.containsKey(DETECT_MANY_TO_MANY_ID) ? 
+               config.getBoolean(DETECT_MANY_TO_MANY_ID) : 
+               DETECT_MANY_TO_MANY_DEFAULT;
       detectManyToMany = shell.promptBoolean(DETECT_MANY_TO_MANY_HELP, detectManyToMany);
-      detectOneToOne = 
-               detectOneToOne == null ? 
-               config.containsKey(DETECT_ONE_TO_ONE_ID) ? config.getBoolean(DETECT_ONE_TO_ONE_ID) : DETECT_ONE_TO_ONE_DEFAULT : 
-               detectOneToOne;
+      Boolean detectOneToOne = 
+               config.containsKey(DETECT_ONE_TO_ONE_ID) ? 
+               config.getBoolean(DETECT_ONE_TO_ONE_ID) : 
+               DETECT_ONE_TO_ONE_DEFAULT;
       detectOneToOne = shell.promptBoolean(DETECT_ONE_TO_ONE_HELP, detectOneToOne);
-      detectOptimisticLock = 
-               detectOptimisticLock == null ? 
-               config.containsKey(DETECT_OPTIMISTIC_LOCK_ID) ? config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID) : DETECT_OPTIMISTIC_LOCK_DEFAULT : 
-               detectOptimisticLock;
+      Boolean detectOptimisticLock = 
+               config.containsKey(DETECT_OPTIMISTIC_LOCK_ID) ? 
+               config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID) : 
+               DETECT_OPTIMISTIC_LOCK_DEFAULT;
       detectOptimisticLock = shell.promptBoolean(DETECT_OPTIMISTIC_LOCK_HELP, detectOptimisticLock);      
       config.setProperty(TABLE_ID, tableFilter);
       config.setProperty(SCHEMA_ID, schemaFilter );
