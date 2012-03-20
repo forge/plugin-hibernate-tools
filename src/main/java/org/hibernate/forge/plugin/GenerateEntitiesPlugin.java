@@ -184,8 +184,6 @@ public class GenerateEntitiesPlugin implements Plugin
       DefaultReverseEngineeringStrategy defaultStrategy = new DefaultReverseEngineeringStrategy();
       ReverseEngineeringStrategy strategy = defaultStrategy;
       
-      shell.println("detect many to many: " + false);
-
       ReverseEngineeringSettings revengsettings = new ReverseEngineeringSettings(strategy)
                .setDefaultPackageName(entityPackage).setDetectManyToMany(detectManyToMany)
                .setDetectOneToOne(detectOneToOne).setDetectOptimisticLock(detectOptimisticLock);
@@ -213,9 +211,8 @@ public class GenerateEntitiesPlugin implements Plugin
 
          try
          {
-
             jmdc.readFromJDBC();
-
+            jmdc.buildMappings();
          }
          catch (HibernateException e)
          {
