@@ -3,6 +3,10 @@ Hibernate Plugin for Forge
 
 A (for now) simple plugin that makes some of the features of Hibernate Tools availabl from within forge.
 
+Installation
+============
+    forge install-plugin hibernate-tools
+
 How to use
 ==========
 
