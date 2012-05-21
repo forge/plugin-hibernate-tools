@@ -1,4 +1,4 @@
-package org.hibernate.forge.plugin;
+package org.hibernate.forge.generate;
 
 import java.sql.Connection;
 import java.sql.Driver;
