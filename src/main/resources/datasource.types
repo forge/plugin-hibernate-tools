@@ -1,0 +1,17 @@
+<datasourceTypes>
+  <type name="HSQL" dialect="org.hibernate.dialect.HSQLDialect">
+    <driver class="org.hsqldb.jdbcDriver">
+      <url value="jdbc:hsqldb:hsql://&lt;host&gt;"/>
+      <url value="jdbc:hsqldb:&lt;dbname&gt;"/>
+      <url value="jdbc:hsqldb:."/>
+    </driver>
+  </type>
+  <type name="H2" dialect="org.hibernate.dialect.H2Dialect">
+    <driver name="org.h2.Driver">
+      <url value="jdbc:h2:&lt;filename&gt;"/>
+      <url value="jdbc:h2:mem:"/>
+      <url value="jdbc:h2:mem:&lt;databaseName&gt;"/>
+      <url value="jdbc:h2:tcp://&lt;server&gt;[:&lt;port&gt;]/&lt;databaseName&gt;"/>
+    </driver>
+  </type>
+</datasourceTypes>

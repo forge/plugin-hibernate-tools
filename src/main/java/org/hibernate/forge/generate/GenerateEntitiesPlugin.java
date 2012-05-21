@@ -1,4 +1,4 @@
-package org.hibernate.forge.plugin;
+package org.hibernate.forge.generate;
 
 import java.io.File;
 import java.net.URL;
