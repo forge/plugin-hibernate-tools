@@ -6,7 +6,9 @@
   <artifactId>hibernate-tools-plugin</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <properties>
-    <forge.api.version>1.0.4.Final</forge.api.version>
+    <forge.api.version>1.0.5.Final</forge.api.version>
+    <hsqldb.version>2.2.8</hsqldb.version>
+    <h2database.version>1.3.167</h2database.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -38,6 +40,18 @@
         <groupId>org.jboss.forge</groupId>
         <artifactId>forge-javaee-impl</artifactId>
         <version>${forge.api.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>${hsqldb.version}</version>
+        <scope>test</scope>
+      </dependency> 
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>${h2database.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -81,9 +95,13 @@
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>2.2.8</version>
       <scope>test</scope>
     </dependency> 
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
