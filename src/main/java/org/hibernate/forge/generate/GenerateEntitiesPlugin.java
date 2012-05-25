@@ -132,9 +132,9 @@ public class GenerateEntitiesPlugin implements Plugin
       jdbcURL = jdbcURL == null ? config.getString(URL_ID) : jdbcURL;
       jdbcUsername = jdbcUsername == null ? config.getString(USER_ID) : jdbcUsername;
       dialect = dialect == null ? config.getString(DIALECT_ID) : dialect;
-      Boolean detectManyToMany = config.getBoolean(DETECT_MANY_TO_MANY_ID);
-      Boolean detectOneToOne = config.getBoolean(DETECT_ONE_TO_ONE_ID);
-      Boolean detectOptimisticLock = config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID);
+      Boolean detectManyToMany = config.containsKey(DETECT_MANY_TO_MANY_ID) ? config.getBoolean(DETECT_MANY_TO_MANY_ID) : false;
+      Boolean detectOneToOne = config.containsKey(DETECT_ONE_TO_ONE_ID) ? config.getBoolean(DETECT_ONE_TO_ONE_ID) : false;
+      Boolean detectOptimisticLock = config.containsKey(DETECT_OPTIMISTIC_LOCK_ID) ? config.getBoolean(DETECT_OPTIMISTIC_LOCK_ID) : false;
       
       PersistenceFacet jpa = project.getFacet(PersistenceFacet.class);
 
@@ -207,7 +207,7 @@ public class GenerateEntitiesPlugin implements Plugin
          Driver driver = (Driver) Class.forName(jdbcDriver, true, Thread.currentThread().getContextClassLoader())
                   .newInstance();
          DriverManager.registerDriver(new DelegatingDriver(driver));
-         DriverManager.getConnection(jdbcURL, jdbcUsername, "").getMetaData();
+         DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword).getMetaData();
 
          try
          {
