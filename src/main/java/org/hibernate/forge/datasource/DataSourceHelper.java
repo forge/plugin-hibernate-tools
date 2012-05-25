@@ -1,5 +1,6 @@
 package org.hibernate.forge.datasource;
 
+import java.sql.Connection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,10 @@ public class DataSourceHelper implements DataSourceConstants
          }
       }
       return result;
+   }
+   
+   public Connection connectToDataSource(DataSourceDescriptor datasource) {
+	   return null;
    }
 
    public void saveDataSources(Collection<DataSourceDescriptor> datasources) {
