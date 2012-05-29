@@ -57,8 +57,8 @@ public class DataSourcePluginTest extends AbstractShellTest {
       DataSourceDescriptor result = new DataSourceDescriptor();
       result.name = id;
       result.dialect = id + " dialect";
-      result.driverClass = id + " driver";
-      result.driverLocation =  id + " path";
+      result.driver = id + " driver";
+      result.path =  id + " path";
       result.url = id + " url";
       result.user = id + " user";
       return result;
