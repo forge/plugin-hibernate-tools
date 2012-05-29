@@ -67,8 +67,8 @@ public class DataSourceHelperTest
       Assert.assertNotNull(dataSourceDescriptor);
       Assert.assertEquals("foo", dataSourceDescriptor.name);
       Assert.assertEquals("foo dialect", dataSourceDescriptor.dialect);
-      Assert.assertEquals("foo driver", dataSourceDescriptor.driverClass);
-      Assert.assertEquals("foo path", dataSourceDescriptor.driverLocation);
+      Assert.assertEquals("foo driver", dataSourceDescriptor.driver);
+      Assert.assertEquals("foo path", dataSourceDescriptor.path);
       Assert.assertEquals("foo url", dataSourceDescriptor.url);
       Assert.assertEquals("foo user", dataSourceDescriptor.user);
    }
@@ -85,8 +85,8 @@ public class DataSourceHelperTest
       DataSourceDescriptor descriptor = new DataSourceDescriptor();
       descriptor.name = "bar";
       descriptor.dialect = "bar dialect";
-      descriptor.driverClass = "bar driver";
-      descriptor.driverLocation = "bar path";
+      descriptor.driver = "bar driver";
+      descriptor.path = "bar path";
       descriptor.url = "bar url";
       descriptor.user = "bar user";
       ArrayList<DataSourceDescriptor> descriptors = new ArrayList<DataSourceDescriptor>();
