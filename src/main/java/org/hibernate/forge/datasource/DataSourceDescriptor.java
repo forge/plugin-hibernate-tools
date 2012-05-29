@@ -2,11 +2,12 @@ package org.hibernate.forge.datasource;
 
 public class DataSourceDescriptor {
 	
-	String name;
-	String dialect;
-	String driverClass;
-	String driverLocation;
-	String url;
-	String user;
+	public String name;
+	public String dialect;
+	public String driver;
+	public String path;
+	public String url;
+	public String user;
+	public String password;
 
 }
