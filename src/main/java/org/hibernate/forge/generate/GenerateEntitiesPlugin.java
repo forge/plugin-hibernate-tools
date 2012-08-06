@@ -50,7 +50,7 @@ import org.jboss.shrinkwrap.descriptor.api.spec.jpa.persistence.Property;
 @RequiresFacet(PersistenceFacet.class)
 @Help("Generate entities from a database.")
 public class GenerateEntitiesPlugin implements Plugin, Constants {
-	
+
 	private static final String DATASOURCE = "datasource";
 	private static final String DATASOURCE_HELP = "Name of the data source to use.";
 
@@ -69,7 +69,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 	private static final String ENTITY_PACKAGE = "entityPackage";
 	private static final String ENTITY_PACKAGE_HELP = "Package to use for generated entities.";
 	private static final String ENTITY_PACKAGE_PROMPT = "In which package you'd like to generate the entities, or enter for default:";
-	
+
 	private static final String DETECT_MANY_TO_MANY_ID = "detectManyToMany";
 	private static final String DETECT_MANY_TO_MANY_HELP = "Detect many-to-many associations between tables.";
 //	private static final Boolean DETECT_MANY_TO_MANY_DEFAULT = Boolean.TRUE;
@@ -208,7 +208,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			Driver driver = (Driver) Class.forName(jdbcDriver, true,
 					Thread.currentThread().getContextClassLoader())
 					.newInstance();
-			DriverManager.registerDriver(new DelegatingDriver(driver));
+			DriverManager.registerDriver(driver);
 
 			try {
 				jmdc.readFromJDBC();
@@ -376,10 +376,10 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 //				: DETECT_OPTIMISTIC_LOCK_DEFAULT;
 //		shell.println("detect optimistic lock: " + detectOptimisticLock);
 	}
-	
-	@Inject 
+
+	@Inject
 	private DataSourceHelper dataSourceHelper;
-	
+
 	@DefaultCommand
 	public void generateEntities(
 			@Option(name = DATASOURCE, help = DATASOURCE_HELP, required = false, completer = DataSourceNameCompleter.class) String dataSource,
@@ -407,11 +407,11 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			return;
 		}
 		exportNewEntities(jmdc);
-		
+
 	}
-	
+
 	private DataSourceDescriptor getOrCreateDataSourceDescriptor(
-			String dataSource, 
+			String dataSource,
 			String url,
 			String user,
 			String dialect,
@@ -432,7 +432,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		result.path = dataSourceHelper.determineDriverPath(path, result);
 		return result;
 	}
-	
+
 	private JDBCMetaDataConfiguration configureMetaData(
 			DataSourceDescriptor descriptor) {
 		JDBCMetaDataConfiguration jmdc = new JDBCMetaDataConfiguration();
@@ -444,16 +444,16 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 				descriptor.password == null ? "" : descriptor.password);
 		properties.setProperty("hibernate.connection.url", descriptor.url);
 		jmdc.setProperties(properties);
-		return jmdc;		
+		return jmdc;
 	}
-	
+
 	private ReverseEngineeringStrategy createReverseEngineeringStrategy(
 			String packageName,
 			Boolean manyToMany,
 			Boolean oneToOne,
 			Boolean optimisticLock) {
 		ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
-		ReverseEngineeringSettings revengsettings = 
+		ReverseEngineeringSettings revengsettings =
 				new ReverseEngineeringSettings(strategy)
 					.setDefaultPackageName(determinePackageName(packageName))
 					.setDetectManyToMany(manyToMany)
@@ -462,7 +462,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		strategy.setSettings(revengsettings);
 		return strategy;
 	}
-	
+
 	private String determinePackageName(String packageName) {
 		if (packageName != null) {
 			return packageName;
@@ -470,23 +470,23 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		PersistenceFacet jpa = project.getFacet(PersistenceFacet.class);
 		return shell.promptCommon(
 				ENTITY_PACKAGE_PROMPT,
-				PromptType.JAVA_PACKAGE, 
+				PromptType.JAVA_PACKAGE,
 				jpa.getEntityPackage());
 	}
-	
+
 	private URL[] getDriverUrls(String path) {
 		ArrayList<URL> urls = new ArrayList<URL>();
 		if (path == null) {
 			ShellMessages.info(shell, "No path was specified for the database driver.");
 		}
 		try {
-			urls.add(new File(path).toURI().toURL());			
+			urls.add(new File(path).toURI().toURL());
 		} catch (MalformedURLException e) {
 			ShellMessages.warn(shell, "The path to the database driver could not be resolved as a valid path.");
 		}
 		return urls.toArray(new URL[urls.size()]);
 	}
-	
+
 	private void executeInNewUrlClassLoader(URL[] urls, Runnable runnable) {
 		ClassLoader savedClassLoader = Thread.currentThread().getContextClassLoader();
 		try {
@@ -497,10 +497,10 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			Thread.currentThread().setContextClassLoader(savedClassLoader);
 		}
 	}
-	
+
 	private void doReverseEngineering(
-			final String driver, 
-			final String path, 
+			final String driver,
+			final String path,
 			final JDBCMetaDataConfiguration jmdc) throws Throwable {
 		try {
 			executeInNewUrlClassLoader(getDriverUrls(path), new Runnable() {
@@ -510,13 +510,13 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 						Driver jdbcDriver = (Driver) Class.forName(driver, true,
 								Thread.currentThread().getContextClassLoader())
 								.newInstance();
-						DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
+						DriverManager.registerDriver(jdbcDriver);
 						jmdc.readFromJDBC();
 						jmdc.buildMappings();
 					} catch (Exception e) {
 						throw new RuntimeException("Exception in runnable", e);
 					}
-				}			
+				}
 			});
 		} catch (RuntimeException e) {
 			if ("Exception in runnable".equals(e.getMessage()) && e.getCause() != null) {
@@ -524,7 +524,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			}
 		}
 	}
-	
+
 	private void exportNewEntities(JDBCMetaDataConfiguration jmdc) {
 		Iterator<?> iter = jmdc.getTableMappings();
 		int count = 0;
@@ -555,9 +555,9 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			String type = (String) iterator.next();
 			shell.println("Generated " + artifacts.getFileCount(type) + " "
 					+ type + " files.");
-		}		
+		}
 	}
 
 }
-	
+
 
