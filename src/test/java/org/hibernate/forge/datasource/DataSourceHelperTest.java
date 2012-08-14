@@ -9,10 +9,14 @@ import junit.framework.Assert;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.forge.Root;
+import org.jboss.forge.test.AbstractShellTest;
+import org.jboss.seam.render.RenderRoot;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.solder.SolderRoot;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,27 +24,30 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class DataSourceHelperTest
 {
-   
-   private static final String BEANS_XML = 
+
+   private static final String BEANS_XML =
             "<beans>                                                            " +
             "  <alternatives>                                                   " +
             "    <class>org.hibernate.forge.datasource.MockConfiguration</class>" +
             "  </alternatives>                                                  " +
-            "</beans>                                                           ";    
-   
+            "</beans>                                                           ";
+
    @Deployment
    public static JavaArchive getDeployment()
    {
-      return ShrinkWrap.create(JavaArchive.class, "test.jar")
+      JavaArchive archive = ShrinkWrap.create(JavaArchive.class, "test.jar").addPackages(true, Root.class.getPackage())
+               .addPackages(true, RenderRoot.class.getPackage()).addPackages(true, SolderRoot.class.getPackage());
+
+      return archive
                .addClass(DataSourceHelper.class)
                .addClass(MockConfiguration.class)
                .addAsManifestResource(
                         new ByteArrayAsset(
-                                 BEANS_XML.getBytes()), 
+                                 BEANS_XML.getBytes()),
                         ArchivePaths.create("beans.xml"));
    }
-   
-   public static String DATASOURCES = 
+
+   public static String DATASOURCES =
             "<datasources>                 " +
             "  <datasource                 " +
             "      name='foo'              " +
@@ -51,14 +58,14 @@ public class DataSourceHelperTest
             "      user='foo user' />      " +
             "</datasources>                ";
 
-   @Inject 
+   @Inject
    private DataSourceHelper dataSourceHelper;
-   
+
    @Before
    public void setup() {
       MockConfiguration.DATASOURCES = DATASOURCES;
    }
-   
+
    @Test
    public void testLoadDataSourcesNonEmpty() {
       Map<String, DataSourceDescriptor> dataSources = dataSourceHelper.loadDataSources();
@@ -72,14 +79,14 @@ public class DataSourceHelperTest
       Assert.assertEquals("foo url", dataSourceDescriptor.url);
       Assert.assertEquals("foo user", dataSourceDescriptor.user);
    }
-   
+
    @Test
    public void testLoadDataSourcesEmpty() {
       MockConfiguration.DATASOURCES = null;
       Map<String, DataSourceDescriptor> dataSources = dataSourceHelper.loadDataSources();
       Assert.assertEquals(0, dataSources.size());
    }
-   
+
    @Test
    public void testSaveDataSourcesNonEmpty() {
       DataSourceDescriptor descriptor = new DataSourceDescriptor();
@@ -102,11 +109,11 @@ public class DataSourceHelperTest
       Assert.assertTrue(dataSources.contains("\"bar url\""));
       Assert.assertTrue(dataSources.contains("\"bar user\""));
    }
-   
+
    @Test
    public void testSaveDataSourcesEmpty() {
       dataSourceHelper.saveDataSources(new ArrayList<DataSourceDescriptor>());
-      Assert.assertNull(MockConfiguration.DATASOURCES);      
+      Assert.assertNull(MockConfiguration.DATASOURCES);
    }
 
 }
