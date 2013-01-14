@@ -1,20 +1,21 @@
-package org.hibernate.forge.datasource;
+package org.hibernate.forge.database;
 
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.hibernate.forge.database.ConnectionProfileType;
 import org.junit.Test;
 
-public class DataSourceTypeTest {
+public class ConnectionProfileTypeTest {
 
 	@Test
 	public void test() throws Exception {
-		Map<String, DataSourceType> allTypes = DataSourceType.allTypes();
+		Map<String, ConnectionProfileType> allTypes = ConnectionProfileType.allTypes();
 		Assert.assertEquals(2, allTypes.size());
 		
-		DataSourceType hsqlType = allTypes.get("HSQL");
+		ConnectionProfileType hsqlType = allTypes.get("HSQL");
 		Assert.assertNotNull(hsqlType);
 		Assert.assertEquals("HSQL", hsqlType.getName());
 		Assert.assertEquals("org.hibernate.dialect.HSQLDialect", hsqlType.getDialect());

@@ -1,4 +1,4 @@
-<datasourceTypes>
+<types>
   <type name="HSQL" dialect="org.hibernate.dialect.HSQLDialect">
     <driver class="org.hsqldb.jdbcDriver">
       <url value="jdbc:hsqldb:hsql://&lt;host&gt;"/>
@@ -14,4 +14,4 @@
       <url value="jdbc:h2:tcp://&lt;server&gt;[:&lt;port&gt;]/&lt;databaseName&gt;"/>
     </driver>
   </type>
-</datasourceTypes>
+</types>

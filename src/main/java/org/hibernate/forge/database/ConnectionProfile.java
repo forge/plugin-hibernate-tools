@@ -1,6 +1,6 @@
-package org.hibernate.forge.datasource;
+package org.hibernate.forge.database;
 
-public class DataSourceDescriptor {
+public class ConnectionProfile {
 	
 	public String name;
 	public String dialect;

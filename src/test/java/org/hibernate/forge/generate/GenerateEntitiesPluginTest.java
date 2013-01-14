@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 import org.h2.tools.Server;
-import org.hibernate.forge.datasource.DataSourceDescriptor;
+import org.hibernate.forge.database.ConnectionProfile;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.test.AbstractShellTest;
 import org.jboss.forge.test.MavenArtifactResolver;
@@ -18,7 +18,7 @@ public class GenerateEntitiesPluginTest extends AbstractShellTest {
 	public static JavaArchive getDeployment() {
 		return AbstractShellTest.getDeployment()
 				.addPackages(true, GenerateEntitiesPlugin.class.getPackage())
-				.addPackages(true, DataSourceDescriptor.class.getPackage());
+				.addPackages(true, ConnectionProfile.class.getPackage());
 
 	}
 

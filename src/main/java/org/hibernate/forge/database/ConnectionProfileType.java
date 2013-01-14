@@ -1,4 +1,4 @@
-package org.hibernate.forge.datasource;
+package org.hibernate.forge.database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,15 +8,15 @@ import java.util.Map;
 import org.jboss.forge.parser.xml.Node;
 import org.jboss.forge.parser.xml.XMLParser;
 
-public class DataSourceType {
+public class ConnectionProfileType {
 	
-	private static Map<String, DataSourceType> ALL_TYPES = null;
+	private static Map<String, ConnectionProfileType> ALL_TYPES = null;
 	
 	private String name = null;
 	private String dialect = null;
 	private Map<String, List<String>> drivers = null;
 	
-	public static Map<String, DataSourceType> allTypes() {
+	public static Map<String, ConnectionProfileType> allTypes() {
 		if (ALL_TYPES == null) {
 			initializeAllTypes();
 		}
@@ -24,20 +24,20 @@ public class DataSourceType {
 	}
 	
 	private static void initializeAllTypes() {
-		ALL_TYPES = new HashMap<String, DataSourceType>();
+		ALL_TYPES = new HashMap<String, ConnectionProfileType>();
 		ClassLoader cl = Thread.currentThread().getContextClassLoader();
-		Node main = XMLParser.parse(cl.getResourceAsStream("datasource.types"));
-		if (!main.getName().equals("datasourceTypes")) return; // Ill formatted datasource resource
+		Node main = XMLParser.parse(cl.getResourceAsStream("connection.profile.types"));
+		if (!main.getName().equals("types")) return; // Ill formatted datasource resource
 		for (Node node : main.getChildren()) {
 			if (node.getName().equals("type")) {
-				DataSourceType type = createDataSourceType(node);
+				ConnectionProfileType type = createConnectionProfileType(node);
 				ALL_TYPES.put(type.name, type);
 			}
 		}
 	}
 	
-	private static DataSourceType createDataSourceType(Node node) {
-		DataSourceType result = new DataSourceType();
+	private static ConnectionProfileType createConnectionProfileType(Node node) {
+		ConnectionProfileType result = new ConnectionProfileType();
 		result.name = node.getAttribute("name");
 		result.dialect = node.getAttribute("dialect");
 		result.drivers = new HashMap<String, List<String>>();

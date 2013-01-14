@@ -1,4 +1,4 @@
-package org.hibernate.forge.datasource;
+package org.hibernate.forge.database;
 
 import javax.enterprise.inject.Alternative;
 
