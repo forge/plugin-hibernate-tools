@@ -163,7 +163,7 @@ public class ConnectionProfileHelper implements Constants {
 	}
 
 	public String determinePassword() {
-		return shell.promptSecret(PASSWORD_PROMPT);
+		return shell.promptSecret(PASSWORD_PROMPT, "");
 	}
 
 }
