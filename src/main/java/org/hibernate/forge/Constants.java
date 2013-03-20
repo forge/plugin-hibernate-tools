@@ -35,6 +35,10 @@ public interface Constants {
 	final String PASSWORD = "password";
 	final String PASSWORD_HELP = "Password for JDBC connection.";
 	final String PASSWORD_PROMPT = "Enter the password for JDBC connection.";
-
+	
+	final String SAVE_PASSWORD = "savePassword";
+	final String SAVE_PASSWORD_HELP = "Should password for JDBC connection be saved?";
+	final String SAVE_PASSWORD_PROMPT = "Save password for JDBC connection?";
+	final String SAVE_PASSWORD_DEFAULT = "false";
 	
 }

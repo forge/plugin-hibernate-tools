@@ -90,6 +90,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			@Option(name = CONNECTION_PROFILE, help = CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String connectionProfileName,
 			@Option(name = URL, help = URL_HELP, required = false) String url,
 			@Option(name = USER, help = USER_HELP, required = false) String user,
+			@Option(name = PASSWORD, help = PASSWORD_HELP, required = false) String password,
 			@Option(name = DIALECT, help = DIALECT_HELP, required = false) String dialect,
 			@Option(name = DRIVER, help = DRIVER_HELP, required = false) String driver,
 			@Option(name = PATH_TO_DRIVER, help = PATH_TO_DRIVER_HELP, required = false) String path,
@@ -101,7 +102,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 	 		@Option(name = DETECT_OPTIMISTIC_LOCK_ID, help = DETECT_OPTIMISTIC_LOCK_HELP, required = false, defaultValue = "true") Boolean optimisticLock,
 	        @Option(name = ENTITY_PACKAGE, help = ENTITY_PACKAGE_HELP, required = false) String packageName)
 	{
-		ConnectionProfile connectionProfile = getOrCreateConnectionProfile(connectionProfileName, url, user, dialect, driver, path);
+		ConnectionProfile connectionProfile = getOrCreateConnectionProfile(connectionProfileName, url, user, password, dialect, driver, path);
 		JDBCMetaDataConfiguration jmdc = configureMetaData(connectionProfile);
 		jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy(packageName, manyToMany, oneToOne, optimisticLock));
 		try {
@@ -119,6 +120,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			String connectionProfile, 
 			String url,
 			String user,
+			String password,
 			String dialect,
 			String driver,
 			String path) {
@@ -131,7 +133,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		}
 		result.url = connectionProfileHelper.determineURL(url, result);
 		result.user = connectionProfileHelper.determineUser(user, result);
-		result.password = connectionProfileHelper.determinePassword();
+		result.password = connectionProfileHelper.determinePassword(password, result);
 		result.dialect = connectionProfileHelper.determineDialect(dialect, result);
 		result.driver = connectionProfileHelper.determineDriverClass(driver, result);
 		result.path = connectionProfileHelper.determineDriverPath(path, result);

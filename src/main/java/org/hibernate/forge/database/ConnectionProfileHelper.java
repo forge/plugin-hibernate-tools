@@ -39,6 +39,7 @@ public class ConnectionProfileHelper implements Constants {
 				descriptor.path = child.getAttribute(PATH_TO_DRIVER);
 				descriptor.url = child.getAttribute(URL);
 				descriptor.user = child.getAttribute(USER);
+				descriptor.savePassword = Boolean.getBoolean(child.getAttribute(SAVE_PASSWORD));
 				result.put(descriptor.name, descriptor);
 			}
 		}
@@ -55,6 +56,10 @@ public class ConnectionProfileHelper implements Constants {
 			child.attribute(PATH_TO_DRIVER, descriptor.path);
 			child.attribute(URL, descriptor.url);
 			child.attribute(USER, descriptor.user);
+			child.attribute(SAVE_PASSWORD, String.valueOf(descriptor.savePassword));
+			if (descriptor.savePassword) {
+				child.attribute(PASSWORD, descriptor.password);
+			}
 		}
 		Configuration config = configuration
 				.getScopedConfiguration(ConfigurationScope.USER);
@@ -162,7 +167,12 @@ public class ConnectionProfileHelper implements Constants {
 		return shell.prompt(USER_PROMPT, (String) null);
 	}
 
-	public String determinePassword() {
+	public String determinePassword(String password, ConnectionProfile descriptor) {
+		if (password != null) 
+			return password;
+		if (descriptor != null && descriptor.password != null && !"".equals(descriptor.password.trim())) {
+			return descriptor.password;
+		}
 		return shell.promptSecret(PASSWORD_PROMPT, "");
 	}
 

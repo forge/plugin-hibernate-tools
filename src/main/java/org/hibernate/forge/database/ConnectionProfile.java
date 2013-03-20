@@ -9,5 +9,6 @@ public class ConnectionProfile {
 	public String url;
 	public String user;
 	public String password;
+	public boolean savePassword;
 
 }
