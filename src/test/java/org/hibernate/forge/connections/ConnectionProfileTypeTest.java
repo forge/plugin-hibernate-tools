@@ -1,11 +1,11 @@
-package org.hibernate.forge.database;
+package org.hibernate.forge.connections;
 
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.hibernate.forge.database.ConnectionProfileType;
+import org.hibernate.forge.connections.ConnectionProfileType;
 import org.junit.Test;
 
 public class ConnectionProfileTypeTest {

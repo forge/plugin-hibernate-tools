@@ -1,4 +1,4 @@
-package org.hibernate.forge.database.h2;
+package org.hibernate.forge.connections.h2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,12 +1,12 @@
-package org.hibernate.forge.database;
+package org.hibernate.forge.connections;
 
 import java.util.Collection;
 import java.util.Map;
 
 import javax.enterprise.inject.Alternative;
 
-import org.hibernate.forge.database.ConnectionProfile;
-import org.hibernate.forge.database.ConnectionProfileHelper;
+import org.hibernate.forge.connections.ConnectionProfile;
+import org.hibernate.forge.connections.ConnectionProfileHelper;
 
 @Alternative
 public class MockConnectionProfileHelper extends ConnectionProfileHelper

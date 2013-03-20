@@ -1,9 +1,11 @@
-package org.hibernate.forge.database;
+package org.hibernate.forge.connections;
 
 import java.util.HashMap;
 
 import junit.framework.Assert;
 
+import org.hibernate.forge.connections.ConnectionProfile;
+import org.hibernate.forge.connections.ConnectionProfilePlugin;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.Root;
 import org.jboss.forge.test.AbstractShellTest;

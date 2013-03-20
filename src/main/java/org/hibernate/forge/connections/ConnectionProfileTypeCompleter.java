@@ -1,4 +1,4 @@
-package org.hibernate.forge.database;
+package org.hibernate.forge.connections;
 
 import org.jboss.forge.shell.completer.SimpleTokenCompleter;
 

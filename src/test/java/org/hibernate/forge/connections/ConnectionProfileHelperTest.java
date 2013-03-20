@@ -1,4 +1,4 @@
-package org.hibernate.forge.database;
+package org.hibernate.forge.connections;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import junit.framework.Assert;
 
-import org.hibernate.forge.database.ConnectionProfile;
-import org.hibernate.forge.database.ConnectionProfileHelper;
+import org.hibernate.forge.connections.ConnectionProfile;
+import org.hibernate.forge.connections.ConnectionProfileHelper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.forge.Root;

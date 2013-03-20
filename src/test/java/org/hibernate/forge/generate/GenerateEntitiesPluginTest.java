@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 import org.h2.tools.Server;
-import org.hibernate.forge.database.ConnectionProfile;
+import org.hibernate.forge.connections.ConnectionProfile;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.forge.test.AbstractShellTest;
 import org.jboss.forge.test.MavenArtifactResolver;
