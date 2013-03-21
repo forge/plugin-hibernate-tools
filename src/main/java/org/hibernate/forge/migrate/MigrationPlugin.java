@@ -32,19 +32,21 @@ public class MigrationPlugin implements Plugin, Constants {
 			@Option(name = FROM_DIALECT, help = FROM_DIALECT_HELP, required = false) String fromDialect,
 			@Option(name = FROM_DRIVER, help = FROM_DRIVER_HELP, required = false) String fromDriver,
 			@Option(name = FROM_PATH_TO_DRIVER, help = FROM_PATH_TO_DRIVER_HELP, required = false) String fromPath,
-			@Option(name = TO_CONNECTION_PROFILE, help = TO_CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String toConnectionProfileName,
-			@Option(name = TO_URL, help = TO_URL_HELP, required = false) String toUrl,
-			@Option(name = TO_USER, help = TO_USER_HELP, required = false) String toUser,
-			@Option(name = TO_PASSWORD, help = TO_PASSWORD_HELP, required = false) String toPassword,
-			@Option(name = TO_DIALECT, help = TO_DIALECT_HELP, required = false) String toDialect,
-			@Option(name = TO_DRIVER, help = TO_DRIVER_HELP, required = false) String toDriver,
-			@Option(name = TO_PATH_TO_DRIVER, help = TO_PATH_TO_DRIVER_HELP, required = false) String toPath) {
+//			@Option(name = TO_CONNECTION_PROFILE, help = TO_CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String toConnectionProfileName,
+//			@Option(name = TO_URL, help = TO_URL_HELP, required = false) String toUrl,
+//			@Option(name = TO_USER, help = TO_USER_HELP, required = false) String toUser,
+//			@Option(name = TO_PASSWORD, help = TO_PASSWORD_HELP, required = false) String toPassword,
+//			@Option(name = TO_DRIVER, help = TO_DRIVER_HELP, required = false) String toDriver,
+//			@Option(name = TO_PATH_TO_DRIVER, help = TO_PATH_TO_DRIVER_HELP, required = false) String toPath,
+			@Option(name = TO_DIALECT, help = TO_DIALECT_HELP, required = false) String toDialect) {
 		ConnectionProfile fromProfile = buildFromProfile(
 				fromConnectionProfileName, fromUrl, fromUser, fromPassword,
 				fromDialect, fromDriver, fromPath);
+//		ConnectionProfile toProfile = buildToProfile(
+//				toConnectionProfileName, toUrl, toUser, toPassword,
+//				toDialect, toDriver, toPath);
 		ConnectionProfile toProfile = buildToProfile(
-				toConnectionProfileName, toUrl, toUser, toPassword,
-				toDialect, toDriver, toPath);
+				null, null, null, null, toDialect, null, null);
 		new MigrationHelper().migrate(fromProfile, toProfile, shell);
 	}
 
