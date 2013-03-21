@@ -1,26 +1,11 @@
 package org.hibernate.forge.migrate;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-
 import javax.inject.Inject;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
 
-import org.hibernate.cfg.JDBCMetaDataConfiguration;
-import org.hibernate.dialect.H2Dialect;
 import org.hibernate.forge.common.Constants;
-import org.hibernate.forge.common.UrlClassLoaderExecutor;
+import org.hibernate.forge.connections.ConnectionProfile;
 import org.hibernate.forge.connections.ConnectionProfileHelper;
 import org.hibernate.forge.connections.ConnectionProfileNameCompleter;
-import org.hibernate.tool.hbm2x.ArtifactCollector;
-import org.hibernate.tool.hbm2x.POJOExporter;
 import org.jboss.forge.shell.Shell;
 import org.jboss.forge.shell.plugins.Alias;
 import org.jboss.forge.shell.plugins.DefaultCommand;
@@ -30,29 +15,14 @@ import org.jboss.forge.shell.plugins.Plugin;
 
 @Alias("migrate-database")
 @Help("Migrate a source database to a target database.")
-public class MigrationPlugin  implements Plugin, Constants {
-	
-	private File baseDir, srcDir, binDir;
-	private String[] script;
-	
-	private void setUp() {
-		baseDir = new File(System.getProperty("java.io.tmpdir"), "tmp");
-		if (baseDir.exists()) {
-			baseDir.delete();
-		}
-		baseDir.mkdir();
-		srcDir = new File(baseDir, "src");
-		srcDir.mkdir();
-		binDir = new File(baseDir, "bin");
-		binDir.mkdir();
-	}
+public class MigrationPlugin implements Plugin, Constants {
 
 	@Inject
 	private Shell shell;
 
-	@Inject 
+	@Inject
 	private ConnectionProfileHelper connectionProfileHelper;
-	
+
 	@DefaultCommand
 	public void migrateDatabase(
 			@Option(name = FROM_CONNECTION_PROFILE, help = FROM_CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String fromConnectionProfileName,
@@ -69,71 +39,65 @@ public class MigrationPlugin  implements Plugin, Constants {
 			@Option(name = TO_DIALECT, help = TO_DIALECT_HELP, required = false) String toDialect,
 			@Option(name = TO_DRIVER, help = TO_DRIVER_HELP, required = false) String toDriver,
 			@Option(name = TO_PATH_TO_DRIVER, help = TO_PATH_TO_DRIVER_HELP, required = false) String toPath) {
-		
+		ConnectionProfile fromProfile = buildFromProfile(
+				fromConnectionProfileName, fromUrl, fromUser, fromPassword,
+				fromDialect, fromDriver, fromPath);
+		ConnectionProfile toProfile = buildToProfile(
+				toConnectionProfileName, toUrl, toUser, toPassword,
+				toDialect, toDriver, toPath);
+		new MigrationHelper().migrate(fromProfile, toProfile, shell);
 	}
-	
-	
-	public void testSomething() {
-		try {
-			setUp();
-			JDBCMetaDataConfiguration cfg = new JDBCMetaDataConfiguration();
-			cfg.setProperties(createFromProperties());
-			cfg.readFromJDBC();
-			cfg.buildMappings();
-			exportNewEntities(cfg);
-			compileSourceFiles();
-			generateScript(cfg);
-			for (int i = 0; i < script.length; i++) {
-				System.out.println(script[i]);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+	private ConnectionProfile buildFromProfile(String connectionProfile,
+			String url, String user, String password, String dialect,
+			String driver, String path) {
+		ConnectionProfile result = null;
+		if (connectionProfile != null) {
+			result = connectionProfileHelper.loadConnectionProfiles().get(
+					connectionProfile);
 		}
-	}
-	
-	private void generateScript(final JDBCMetaDataConfiguration cfg) throws Exception {
-		URL[] urls = new URL[] { binDir.toURI().toURL() };
-		UrlClassLoaderExecutor.execute(urls, new Runnable() {
-			@Override
-			public void run() {
-				script = cfg.generateSchemaCreationScript(new H2Dialect());
-			}			
-		});
-	}
-	
-	private void compileSourceFiles() throws Exception {
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-		File[] files = srcDir.listFiles();
-		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(files); // use alternative method
-	    List<String> optionList = new ArrayList<String>();
-        optionList.addAll(Arrays.asList("-d", binDir.getAbsolutePath()));
-    	boolean result = compiler.getTask(null, fileManager, null, optionList, null, compilationUnits).call();
-		System.out.println("compilation: " + result);
-		fileManager.close();
+		if (result == null) {
+			result = new ConnectionProfile();
+		}
+		result.url = connectionProfileHelper.determineURL(FROM_URL_PROMPT, url,
+				result);
+		result.user = connectionProfileHelper.determineUser(FROM_USER_PROMPT,
+				user, result);
+		result.password = connectionProfileHelper.determinePassword(
+				FROM_PASSWORD_PROMPT, password, result);
+		result.dialect = connectionProfileHelper.determineDialect(
+				FROM_DIALECT_PROMPT, dialect, result);
+		result.driver = connectionProfileHelper.determineDriverClass(
+				FROM_DRIVER_PROMPT, driver, result);
+		result.path = connectionProfileHelper.determineDriverPath(
+				FROM_PATH_TO_DRIVER_PROMPT, path, result);
+		return result;
 	}
 
-	private Properties createFromProperties() {
-		Properties properties = new Properties();
-		properties.setProperty("hibernate.connection.driver_class",
-				"org.h2.Driver");
-		properties.setProperty("hibernate.connection.username", "sa");
-		properties.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.H2Dialect");
-		properties.setProperty("hibernate.connection.url",
-				"jdbc:h2:~/app-root/data/sakila");
-		return properties;
-	}
-
-	private void exportNewEntities(JDBCMetaDataConfiguration jmdc) throws Exception {
-		POJOExporter pj = new POJOExporter(jmdc, srcDir);
-		Properties pojoProperties = new Properties();
-		pojoProperties.setProperty("jdk5", "true");
-		pojoProperties.setProperty("ejb3", "true");
-		pj.setProperties(pojoProperties);
-		ArtifactCollector artifacts = new ArtifactCollector();
-		pj.setArtifactCollector(artifacts);
-		pj.start();
+	private ConnectionProfile buildToProfile(String connectionProfile,
+			String url, String user, String password, String dialect,
+			String driver, String path) {
+		ConnectionProfile result = null;
+		if (connectionProfile != null) {
+			result = connectionProfileHelper.loadConnectionProfiles().get(
+					connectionProfile);
+		}
+		if (result == null) {
+			result = new ConnectionProfile();
+		}
+//		result.url = connectionProfileHelper.determineURL(TO_URL_PROMPT, url,
+//				result);
+//		result.user = connectionProfileHelper.determineUser(TO_USER_PROMPT,
+//				user, result);
+//		result.password = connectionProfileHelper.determinePassword(
+//				TO_PASSWORD_PROMPT, password, result);
+		result.dialect = connectionProfileHelper.determineDialect(
+				TO_DIALECT_PROMPT, dialect, result);
+//		result.driver = connectionProfileHelper.determineDriverClass(
+//				TO_DRIVER_PROMPT, driver, result);
+//		result.path = connectionProfileHelper.determineDriverPath(
+//				TO_PATH_TO_DRIVER_PROMPT, path, result);
+		return result;
 	}
 
 }
