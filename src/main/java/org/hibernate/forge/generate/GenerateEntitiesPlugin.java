@@ -71,7 +71,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 	 		@Option(name = DETECT_OPTIMISTIC_LOCK_ID, help = DETECT_OPTIMISTIC_LOCK_HELP, required = false, defaultValue = "true") Boolean optimisticLock,
 	        @Option(name = ENTITY_PACKAGE, help = ENTITY_PACKAGE_HELP, required = false) String packageName)
 	{
-		ConnectionProfile connectionProfile = getOrCreateConnectionProfile(connectionProfileName, url, user, password, dialect, driver, path);
+		ConnectionProfile connectionProfile = buildConnectionProfile(connectionProfileName, url, user, password, dialect, driver, path);
 		JDBCMetaDataConfiguration jmdc = configureMetaData(connectionProfile);
 		jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy(packageName, manyToMany, oneToOne, optimisticLock));
 		try {
@@ -85,7 +85,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		
 	}
 	
-	private ConnectionProfile getOrCreateConnectionProfile(
+	private ConnectionProfile buildConnectionProfile(
 			String connectionProfile, 
 			String url,
 			String user,
@@ -100,12 +100,12 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		if (result == null) {
 			result = new ConnectionProfile();
 		}
-		result.url = connectionProfileHelper.determineURL(url, result);
-		result.user = connectionProfileHelper.determineUser(user, result);
-		result.password = connectionProfileHelper.determinePassword(password, result);
-		result.dialect = connectionProfileHelper.determineDialect(dialect, result);
-		result.driver = connectionProfileHelper.determineDriverClass(driver, result);
-		result.path = connectionProfileHelper.determineDriverPath(path, result);
+		result.url = connectionProfileHelper.determineURL(URL_PROMPT, url, result);
+		result.user = connectionProfileHelper.determineUser(USER_PROMPT, user, result);
+		result.password = connectionProfileHelper.determinePassword(PASSWORD_PROMPT, password, result);
+		result.dialect = connectionProfileHelper.determineDialect(DIALECT_PROMPT, dialect, result);
+		result.driver = connectionProfileHelper.determineDriverClass(DRIVER_PROMPT, driver, result);
+		result.path = connectionProfileHelper.determineDriverPath(PATH_TO_DRIVER_PROMPT, path, result);
 		return result;
 	}
 	

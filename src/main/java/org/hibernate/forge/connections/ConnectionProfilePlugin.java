@@ -183,14 +183,14 @@ public class ConnectionProfilePlugin implements Plugin, Constants {
 		ConnectionProfileType connectionProfileType = ConnectionProfileType.allTypes().get(type);
 		connectionProfile.name = name;
 		connectionProfile.dialect = connectionProfileHelper.determineDialect(
-				dialect, connectionProfileType);
+				DIALECT_PROMPT, dialect, connectionProfileType);
 		connectionProfile.driver = connectionProfileHelper
-				.determineDriverClass(driver, connectionProfileType);
+				.determineDriverClass(DRIVER_PROMPT, driver, connectionProfileType);
 		connectionProfile.path = connectionProfileHelper
-				.determineDriverPath(path, connectionProfileType);
-		connectionProfile.url = connectionProfileHelper.determineURL(url,
+				.determineDriverPath(PATH_TO_DRIVER_PROMPT, path, connectionProfileType);
+		connectionProfile.url = connectionProfileHelper.determineURL(URL_PROMPT, url,
 				connectionProfileType, connectionProfile.driver);
-		connectionProfile.user = connectionProfileHelper.determineUser(user);
+		connectionProfile.user = connectionProfileHelper.determineUser(USER_PROMPT, user);
 		connectionProfiles.put(name, connectionProfile);
 		connectionProfileHelper.saveConnectionProfiles(connectionProfiles.values());
 		saveSuccess(connectionProfile, out);

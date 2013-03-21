@@ -70,110 +70,110 @@ public class ConnectionProfileHelper implements Constants {
 		}
 	}
 
-	public String determineDialect(String dialect, ConnectionProfileType type) {
+	public String determineDialect(String prompt, String dialect, ConnectionProfileType type) {
 		if (dialect != null)
 			return dialect;
 		if (type != null && type.getDialect() != null)
 			return type.getDialect();
-		return determineDialect(DIALECT_DEFAULT);
+		return determineDialect(prompt, DIALECT_DEFAULT);
 	}
 	
-	public String determineDialect(String dialect, ConnectionProfile descriptor) {
+	public String determineDialect(String prompt, String dialect, ConnectionProfile descriptor) {
 		if (dialect != null)
 			return dialect;
 		if (descriptor != null && descriptor.dialect != null && !"".equals(descriptor.dialect.trim()))
 			return descriptor.dialect;
-		return determineDialect(DIALECT_DEFAULT);
+		return determineDialect(prompt, DIALECT_DEFAULT);
 	}
 
-	public String determineDialect(String defaultDialect) {
-		return shell.prompt(DIALECT_PROMPT, defaultDialect);
+	public String determineDialect(String prompt, String defaultDialect) {
+		return shell.prompt(prompt, defaultDialect);
 	}
 
-	public String determineDriverClass(String driver, ConnectionProfileType type) {
+	public String determineDriverClass(String prompt, String driver, ConnectionProfileType type) {
 		if (driver != null)
 			return driver;
 		if (type != null) {
 			ArrayList<String> candidates = new ArrayList<String>(type
 					.getDrivers().keySet());
 			if (candidates.size() > 1) {
-				return candidates.get(shell.promptChoice(DRIVER_PROMPT,
+				return candidates.get(shell.promptChoice(prompt,
 						candidates));
 			} else if (candidates.size() == 1) {
 				return candidates.get(0);
 			}
 		}
-		return determineDriverClass(DRIVER_DEFAULT);
+		return determineDriverClass(prompt, DRIVER_DEFAULT);
 	}
 
-	public String determineDriverClass(String driver, ConnectionProfile descriptor) {
+	public String determineDriverClass(String prompt, String driver, ConnectionProfile descriptor) {
 		if (driver != null)
 			return driver;
 		if (descriptor != null && descriptor.driver != null && !"".equals(descriptor.driver.trim())) {
 			return descriptor.driver;
 		}
-		return determineDriverClass(DRIVER_DEFAULT);
+		return determineDriverClass(prompt, DRIVER_DEFAULT);
 	}
 	
-	public String determineDriverClass(String defaultDriverClass) {
-		return shell.prompt(DRIVER_PROMPT, defaultDriverClass);
+	public String determineDriverClass(String prompt, String defaultDriverClass) {
+		return shell.prompt(prompt, defaultDriverClass);
 	}
 
-	public String determineDriverPath(String path, ConnectionProfileType type) {
+	public String determineDriverPath(String prompt, String path, ConnectionProfileType type) {
 		if (path != null)
 			return path;
 		// TODO resolve driver location in maven repo if possible
-		return shell.prompt(PATH_TO_DRIVER_PROMPT, (String) null);
+		return shell.prompt(prompt, (String) null);
 	}
 
-	public String determineDriverPath(String path, ConnectionProfile descriptor) {
+	public String determineDriverPath(String prompt, String path, ConnectionProfile descriptor) {
 		if (path != null)
 			return path;
 		if (descriptor != null && descriptor.path != null && !"".equals(descriptor.path.trim())) { 
 			return descriptor.path;
 		}
-		return shell.prompt(PATH_TO_DRIVER_PROMPT, (String) null);
+		return shell.prompt(prompt, (String) null);
 	}
 
-	public String determineURL(String url, ConnectionProfileType type, String driverClass) {
+	public String determineURL(String prompt, String url, ConnectionProfileType type, String driverClass) {
 		if (url != null)
 			return url;
 		// TODO suggest the proper url format based on the type and the
 		// driverClass
-		return shell.prompt(URL_PROMPT, URL_DEFAULT);
+		return shell.prompt(prompt, URL_DEFAULT);
 	}
 
-	public String determineURL(String url, ConnectionProfile descriptor) {
+	public String determineURL(String prompt, String url, ConnectionProfile descriptor) {
 		if (url != null)
 			return url;
 		if (descriptor != null && descriptor.url != null && !"".equals(descriptor.url.trim())) { 
 			return descriptor.url;
 		}
-		return shell.prompt(URL_PROMPT, URL_DEFAULT);
+		return shell.prompt(prompt, URL_DEFAULT);
 	}
 
-	public String determineUser(String user) {
+	public String determineUser(String prompt, String user) {
 		if (user != null)
 			return user;
-		return shell.prompt(USER_PROMPT, USER_DEFAULT);
+		return shell.prompt(prompt, USER_DEFAULT);
 	}
 
-	public String determineUser(String user, ConnectionProfile descriptor) {
+	public String determineUser(String prompt, String user, ConnectionProfile descriptor) {
 		if (user != null)
 			return user;
 		if (descriptor != null && descriptor.user != null && !"".equals(descriptor.user.trim())) {
 			return descriptor.user;
 		}
-		return shell.prompt(USER_PROMPT, (String) null);
+		return shell.prompt(prompt, (String) null);
 	}
 
-	public String determinePassword(String password, ConnectionProfile descriptor) {
+	public String determinePassword(String prompt, String password, ConnectionProfile descriptor) {
 		if (password != null) 
 			return password;
 		if (descriptor != null && descriptor.password != null && !"".equals(descriptor.password.trim())) {
 			return descriptor.password;
 		}
-		return shell.promptSecret(PASSWORD_PROMPT, "");
+		return shell.promptSecret(prompt, "");
 	}
-
+	
 }

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -14,11 +15,22 @@ import javax.tools.ToolProvider;
 
 import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.dialect.H2Dialect;
+import org.hibernate.forge.common.Constants;
 import org.hibernate.forge.common.UrlClassLoaderExecutor;
+import org.hibernate.forge.connections.ConnectionProfileHelper;
+import org.hibernate.forge.connections.ConnectionProfileNameCompleter;
 import org.hibernate.tool.hbm2x.ArtifactCollector;
 import org.hibernate.tool.hbm2x.POJOExporter;
+import org.jboss.forge.shell.Shell;
+import org.jboss.forge.shell.plugins.Alias;
+import org.jboss.forge.shell.plugins.DefaultCommand;
+import org.jboss.forge.shell.plugins.Help;
+import org.jboss.forge.shell.plugins.Option;
+import org.jboss.forge.shell.plugins.Plugin;
 
-public class MigrationPlugin {
+@Alias("migrate-database")
+@Help("Migrate a source database to a target database.")
+public class MigrationPlugin  implements Plugin, Constants {
 	
 	private File baseDir, srcDir, binDir;
 	private String[] script;
@@ -35,6 +47,32 @@ public class MigrationPlugin {
 		binDir.mkdir();
 	}
 
+	@Inject
+	private Shell shell;
+
+	@Inject 
+	private ConnectionProfileHelper connectionProfileHelper;
+	
+	@DefaultCommand
+	public void migrateDatabase(
+			@Option(name = FROM_CONNECTION_PROFILE, help = FROM_CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String fromConnectionProfileName,
+			@Option(name = FROM_URL, help = FROM_URL_HELP, required = false) String fromUrl,
+			@Option(name = FROM_USER, help = FROM_USER_HELP, required = false) String fromUser,
+			@Option(name = FROM_PASSWORD, help = FROM_PASSWORD_HELP, required = false) String fromPassword,
+			@Option(name = FROM_DIALECT, help = FROM_DIALECT_HELP, required = false) String fromDialect,
+			@Option(name = FROM_DRIVER, help = FROM_DRIVER_HELP, required = false) String fromDriver,
+			@Option(name = FROM_PATH_TO_DRIVER, help = FROM_PATH_TO_DRIVER_HELP, required = false) String fromPath,
+			@Option(name = TO_CONNECTION_PROFILE, help = TO_CONNECTION_PROFILE_HELP, required = false, completer = ConnectionProfileNameCompleter.class) String toConnectionProfileName,
+			@Option(name = TO_URL, help = TO_URL_HELP, required = false) String toUrl,
+			@Option(name = TO_USER, help = TO_USER_HELP, required = false) String toUser,
+			@Option(name = TO_PASSWORD, help = TO_PASSWORD_HELP, required = false) String toPassword,
+			@Option(name = TO_DIALECT, help = TO_DIALECT_HELP, required = false) String toDialect,
+			@Option(name = TO_DRIVER, help = TO_DRIVER_HELP, required = false) String toDriver,
+			@Option(name = TO_PATH_TO_DRIVER, help = TO_PATH_TO_DRIVER_HELP, required = false) String toPath) {
+		
+	}
+	
+	
 	public void testSomething() {
 		try {
 			setUp();
