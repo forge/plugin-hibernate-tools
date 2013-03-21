@@ -3,7 +3,6 @@ package org.hibernate.forge.generate;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
@@ -18,6 +17,7 @@ import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
 import org.hibernate.forge.common.Constants;
+import org.hibernate.forge.common.UrlClassLoaderExecutor;
 import org.hibernate.forge.connections.ConnectionProfile;
 import org.hibernate.forge.connections.ConnectionProfileHelper;
 import org.hibernate.forge.connections.ConnectionProfileNameCompleter;
@@ -194,23 +194,12 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 		return urls.toArray(new URL[urls.size()]);
 	}
 	
-	private void executeInNewUrlClassLoader(URL[] urls, Runnable runnable) {
-		ClassLoader savedClassLoader = Thread.currentThread().getContextClassLoader();
-		try {
-			URLClassLoader newClassLoader = new URLClassLoader(urls, savedClassLoader);
-			Thread.currentThread().setContextClassLoader(newClassLoader);
-			runnable.run();
-		} finally {
-			Thread.currentThread().setContextClassLoader(savedClassLoader);
-		}
-	}
-	
 	private void doReverseEngineering(
 			final String driver, 
 			final String path, 
 			final JDBCMetaDataConfiguration jmdc) throws Throwable {
 		try {
-			executeInNewUrlClassLoader(getDriverUrls(path), new Runnable() {
+			UrlClassLoaderExecutor.execute(getDriverUrls(path), new Runnable() {
 				@Override
 				public void run() {
 					try {

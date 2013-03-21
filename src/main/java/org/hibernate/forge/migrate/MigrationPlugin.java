@@ -2,7 +2,6 @@ package org.hibernate.forge.migrate;
 
 import java.io.File;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,6 +14,7 @@ import javax.tools.ToolProvider;
 
 import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.dialect.H2Dialect;
+import org.hibernate.forge.common.UrlClassLoaderExecutor;
 import org.hibernate.tool.hbm2x.ArtifactCollector;
 import org.hibernate.tool.hbm2x.POJOExporter;
 
@@ -53,20 +53,9 @@ public class MigrationPlugin {
 		}
 	}
 	
-	private void executeInNewUrlClassLoader(URL[] urls, Runnable runnable) {
-		ClassLoader savedClassLoader = Thread.currentThread().getContextClassLoader();
-		try {
-			URLClassLoader newClassLoader = new URLClassLoader(urls, savedClassLoader);
-			Thread.currentThread().setContextClassLoader(newClassLoader);
-			runnable.run();
-		} finally {
-			Thread.currentThread().setContextClassLoader(savedClassLoader);
-		}
-	}
-	
 	private void generateScript(final JDBCMetaDataConfiguration cfg) throws Exception {
 		URL[] urls = new URL[] { binDir.toURI().toURL() };
-		executeInNewUrlClassLoader(urls, new Runnable() {
+		UrlClassLoaderExecutor.execute(urls, new Runnable() {
 			@Override
 			public void run() {
 				script = cfg.generateSchemaCreationScript(new H2Dialect());
