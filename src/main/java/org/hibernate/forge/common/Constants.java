@@ -41,4 +41,35 @@ public interface Constants {
 	final String SAVE_PASSWORD_PROMPT = "Save password for JDBC connection?";
 	final String SAVE_PASSWORD_DEFAULT = "false";
 	
+	final String CONNECTION_PROFILE = "connection-profile";
+	final String CONNECTION_PROFILE_HELP = "Name of the connection profile to use.";
+
+	final String TABLE_ID = "table";
+	final String TABLE_HELP = "Table pattern to include. 'CUSTOMER' for specific table, 'CUST*' for substring match and '*' for all (the default)";
+	final String TABLE_DEFAULT = "*";
+
+	final String SCHEMA_ID = "schema";
+	final String SCHEMA_HELP = "Schema pattern to include. 'PRODUCTION' for specific schema, 'PR*' for substring match and '*' for all (the default)";
+	final String SCHEMA_DEFAULT = "*";
+
+	final String CATALOG_ID = "catalog";
+	final String CATALOG_HELP = "Catalog pattern to include. 'MAIN' for specific schema, 'M*' for substring match and '*' for all (the default)";
+	final String CATALOG_DEFAULT = "*";
+
+	final String ENTITY_PACKAGE = "entityPackage";
+	final String ENTITY_PACKAGE_HELP = "Package to use for generated entities.";
+	final String ENTITY_PACKAGE_PROMPT = "In which package you'd like to generate the entities, or enter for default:";
+	
+	final String DETECT_MANY_TO_MANY_ID = "detectManyToMany";
+	final String DETECT_MANY_TO_MANY_HELP = "Detect many-to-many associations between tables.";
+//	final Boolean DETECT_MANY_TO_MANY_DEFAULT = Boolean.TRUE;
+//
+	final String DETECT_ONE_TO_ONE_ID = "detectOneToOne";
+	final String DETECT_ONE_TO_ONE_HELP = "Detect one-to-one associations between tables.";
+//	final Boolean DETECT_ONE_TO_ONE_DEFAULT = Boolean.TRUE;
+//
+	final String DETECT_OPTIMISTIC_LOCK_ID = "detectOptimisticLock";
+	final String DETECT_OPTIMISTIC_LOCK_HELP = "Detect optimistic locking tables, i.e. if a table has a column named 'version' with a numeric type optimistic locking will be setup for that table.";
+//	final Boolean DETECT_OPTIMISTIC_LOCK_DEFAULT = Boolean.TRUE;
+
 }

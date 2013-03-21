@@ -45,37 +45,6 @@ import org.jboss.forge.spec.javaee.PersistenceFacet;
 @Help("Generate entities from a database.")
 public class GenerateEntitiesPlugin implements Plugin, Constants {
 	
-	private static final String CONNECTION_PROFILE = "connection-profile";
-	private static final String CONNECTION_PROFILE_HELP = "Name of the connection profile to use.";
-
-	private static final String TABLE_ID = "table";
-	private static final String TABLE_HELP = "Table pattern to include. 'CUSTOMER' for specific table, 'CUST*' for substring match and '*' for all (the default)";
-	private static final String TABLE_DEFAULT = "*";
-
-	private static final String SCHEMA_ID = "schema";
-	private static final String SCHEMA_HELP = "Schema pattern to include. 'PRODUCTION' for specific schema, 'PR*' for substring match and '*' for all (the default)";
-	private static final String SCHEMA_DEFAULT = "*";
-
-	private static final String CATALOG_ID = "catalog";
-	private static final String CATALOG_HELP = "Catalog pattern to include. 'MAIN' for specific schema, 'M*' for substring match and '*' for all (the default)";
-	private static final String CATALOG_DEFAULT = "*";
-
-	private static final String ENTITY_PACKAGE = "entityPackage";
-	private static final String ENTITY_PACKAGE_HELP = "Package to use for generated entities.";
-	private static final String ENTITY_PACKAGE_PROMPT = "In which package you'd like to generate the entities, or enter for default:";
-	
-	private static final String DETECT_MANY_TO_MANY_ID = "detectManyToMany";
-	private static final String DETECT_MANY_TO_MANY_HELP = "Detect many-to-many associations between tables.";
-//	private static final Boolean DETECT_MANY_TO_MANY_DEFAULT = Boolean.TRUE;
-//
-	private static final String DETECT_ONE_TO_ONE_ID = "detectOneToOne";
-	private static final String DETECT_ONE_TO_ONE_HELP = "Detect one-to-one associations between tables.";
-//	private static final Boolean DETECT_ONE_TO_ONE_DEFAULT = Boolean.TRUE;
-//
-	private static final String DETECT_OPTIMISTIC_LOCK_ID = "detectOptimisticLock";
-	private static final String DETECT_OPTIMISTIC_LOCK_HELP = "Detect optimistic locking tables, i.e. if a table has a column named 'version' with a numeric type optimistic locking will be setup for that table.";
-//	private static final Boolean DETECT_OPTIMISTIC_LOCK_DEFAULT = Boolean.TRUE;
-
 	@Inject
 	private Shell shell;
 
