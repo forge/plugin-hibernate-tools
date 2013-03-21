@@ -17,7 +17,7 @@ import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
-import org.hibernate.forge.Constants;
+import org.hibernate.forge.common.Constants;
 import org.hibernate.forge.connections.ConnectionProfile;
 import org.hibernate.forge.connections.ConnectionProfileHelper;
 import org.hibernate.forge.connections.ConnectionProfileNameCompleter;

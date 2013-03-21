@@ -6,11 +6,8 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticListener;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
@@ -113,45 +110,6 @@ public class MigrationPluginTest {
 		ArtifactCollector artifacts = new ArtifactCollector();
 		pj.setArtifactCollector(artifacts);
 		pj.start();
-		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-		StandardJavaFileManager fileManager = compiler.getStandardFileManager(
-				new MyDiagnosticListener(), null, null);
-		File[] files = artifacts.getFiles("java");
-		Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjects(files); // use alternative method
-	    List<String> optionList = new ArrayList<String>();
-        optionList.addAll(Arrays.asList("-d", binDir.getAbsolutePath()));
-    	boolean result = compiler.getTask(null, fileManager, new MyDiagnosticListener(), optionList, null, compilationUnits).call();
-		System.out.println("compilation: " + result);
-		fileManager.close();
-		File[] classFiles = binDir.listFiles();
-		for (int i = 0; i < classFiles.length; i++) {
-			System.out.println(classFiles[i].getAbsolutePath());
-		}
-		// for (Iterator<?> iterator = fileTypes.iterator();
-		// iterator.hasNext();) {
-		// String type = (String) iterator.next();
-		//
-		// System.out.println("Type: " + type);
-		// File[] files = artifacts.getFiles(type);
-		// for (int i = 0; i < files.length; i++) {
-		// System.out.println("generated " + files[i].getAbsolutePath());
-		// }
-		// }
-		//baseDir.delete();
 	}
 
-	class MyDiagnosticListener implements DiagnosticListener {
-		public void report(Diagnostic diagnostic) {
-		    System.out.println("Code->" + diagnostic.getCode());
-		    System.out.println("Column Number->" + diagnostic.getColumnNumber());
-		    System.out.println("End Position->" + diagnostic.getEndPosition());
-		    System.out.println("Kind->" + diagnostic.getKind());
-		    System.out.println("Line Number->" + diagnostic.getLineNumber());
-		    System.out.println("Message->" + diagnostic.getMessage(Locale.ENGLISH));
-		    System.out.println("Position->" + diagnostic.getPosition());
-		    System.out.println("Source" + diagnostic.getSource());
-		    System.out.println("Start Position->" + diagnostic.getStartPosition());
-		    System.out.println("\n");
-		}
-	}
 }

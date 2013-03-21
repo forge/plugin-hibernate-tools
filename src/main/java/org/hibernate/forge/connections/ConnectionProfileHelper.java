@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.hibernate.forge.Constants;
+import org.hibernate.forge.common.Constants;
 import org.jboss.forge.env.Configuration;
 import org.jboss.forge.env.ConfigurationScope;
 import org.jboss.forge.parser.xml.Node;

@@ -1,4 +1,4 @@
-package org.hibernate.forge;
+package org.hibernate.forge.common;
 
 public interface Constants {
 
