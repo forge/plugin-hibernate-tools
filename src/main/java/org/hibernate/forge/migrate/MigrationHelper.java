@@ -4,8 +4,11 @@ import java.io.File;
 import java.net.URL;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +32,7 @@ import org.jboss.forge.shell.Shell;
 public class MigrationHelper {
 
 	private File baseDir, srcDir, binDir;
-	private String[] script;
+	private String[] schemaCreationScript;
 	private JDBCMetaDataConfiguration metaDataCfg; 
 	
 	private void setUp() {
@@ -57,13 +60,69 @@ public class MigrationHelper {
 			createSourceFiles();
 			compileSourceFiles();
 			generateScript(to);
-			for (int i = 0; i < script.length; i++) {
-				shell.println(script[i]);
-			}
+			addInsertStatements(from);
+			dumpScript();
 			tearDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void dumpScript() {
+		for (String line : schemaCreationScript) {
+			System.out.println(line);
+		}
+	}
+	
+	private void addInsertStatements(ConnectionProfile from) throws Exception {
+		ArrayList<String> lines = new ArrayList<String>();
+		for (int i = 0; i < schemaCreationScript.length; i++) {
+			String line = schemaCreationScript[i];
+			lines.add(line);
+			if (line.startsWith("create table ")) {
+				int index = line.indexOf(" (", 13);
+				String tableName = line.substring(13, index);
+				addInsertStatements(lines, tableName, from);
+			}
+		}
+		schemaCreationScript = lines.toArray(new String[lines.size()]);		
+	}
+	
+	private void addInsertStatements(
+			final ArrayList<String> lines, 
+			final String tableName, 
+			final ConnectionProfile cp) throws Exception {
+		URL[] urls = new URL[] { new File(cp.path).toURI().toURL() };
+		UrlClassLoaderExecutor.execute(urls, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Driver jdbcDriver = (Driver) Class.forName(cp.driver, true,
+							Thread.currentThread().getContextClassLoader())
+							.newInstance();
+					DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
+					Connection connection = DriverManager.getConnection(
+							cp.url, cp.user, cp.password);
+					String statement = "select * from " + tableName;
+					ResultSet rs = connection.createStatement().executeQuery(statement);
+					ResultSetMetaData rsmd = rs.getMetaData();
+					while (rs.next()) {
+						String insertStatement = "insert into " + tableName + "(";
+						for (int i = 1; i < rsmd.getColumnCount(); i++) {
+							insertStatement += rsmd.getColumnName(i) + ",";
+						}
+						insertStatement += rsmd.getCatalogName(rsmd.getColumnCount()) + ") VALUES (";
+						for (int i = 1; i < rsmd.getColumnCount(); i++) {
+							insertStatement += rs.getObject(i) + ",";
+						}
+						insertStatement += rs.getObject(rsmd.getColumnCount()) + ")";
+						lines.add(insertStatement);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}			
+		});
 	}
 	
 	private void buildMetaDataConfiguration(final ConnectionProfile cp) throws Exception {
@@ -93,7 +152,7 @@ public class MigrationHelper {
 		UrlClassLoaderExecutor.execute(urls, new Runnable() {
 			@Override
 			public void run() {
-				script = metaDataCfg.generateSchemaCreationScript(new H2Dialect());
+				schemaCreationScript = metaDataCfg.generateSchemaCreationScript(new H2Dialect());
 			}
 		});
 	}
