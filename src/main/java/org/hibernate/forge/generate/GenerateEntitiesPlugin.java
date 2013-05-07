@@ -16,6 +16,7 @@ import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
+import org.hibernate.cfg.reveng.TableIdentifier;
 import org.hibernate.forge.common.Constants;
 import org.hibernate.forge.common.UrlClassLoaderExecutor;
 import org.hibernate.forge.connections.ConnectionProfile;
@@ -73,7 +74,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 	{
 		ConnectionProfile connectionProfile = buildConnectionProfile(connectionProfileName, url, user, password, dialect, driver, path);
 		JDBCMetaDataConfiguration jmdc = configureMetaData(connectionProfile);
-		jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy(packageName, manyToMany, oneToOne, optimisticLock));
+		jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy(packageName, manyToMany, oneToOne, optimisticLock, catalogs,schemas, tables));
 		try {
 			doReverseEngineering(connectionProfile.driver, connectionProfile.path, jmdc);
 		} catch (Throwable t) {
@@ -127,8 +128,8 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 			String packageName,
 			Boolean manyToMany,
 			Boolean oneToOne,
-			Boolean optimisticLock) {
-		ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
+			Boolean optimisticLock, String catalogs, String schemas, String tables) {
+		ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategyWithSchemaSelection(catalogs,schemas,tables);
 		ReverseEngineeringSettings revengsettings = 
 				new ReverseEngineeringSettings(strategy)
 					.setDefaultPackageName(determinePackageName(packageName))
@@ -176,6 +177,7 @@ public class GenerateEntitiesPlugin implements Plugin, Constants {
 								Thread.currentThread().getContextClassLoader())
 								.newInstance();
 						DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
+						
 						jmdc.readFromJDBC();
 						jmdc.buildMappings();
 					} catch (Exception e) {
