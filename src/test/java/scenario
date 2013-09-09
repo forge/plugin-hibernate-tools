@@ -1,6 +1,0 @@
-h2 start
-datasource add --name testH2 --type H2
-datasource info --name testH2
-datasource test --name testH2
-datasource remove --name testH2
-h2 stop
