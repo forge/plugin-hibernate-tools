@@ -1,1 +1,0 @@
-package org.plugin.hibernate.tools;
