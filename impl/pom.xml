@@ -3,8 +3,8 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.plugin.hibernate.tools</groupId>
-    <artifactId>plugin-hibernate-tools-parent</artifactId>
+    <groupId>org.jboss.forge.addon</groupId>
+    <artifactId>hibernate-tools-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>hibernate-tools-impl</artifactId>
@@ -15,13 +15,13 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.plugin.hibernate.tools</groupId>
-      <artifactId>plugin-hibernate-tools-api</artifactId>
+      <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>hibernate-tools-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.plugin.hibernate.tools</groupId>
-      <artifactId>plugin-hibernate-tools-spi</artifactId>
+      <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>hibernate-tools-spi</artifactId>
       <classifier>forge-addon</classifier>
       <scope>provided</scope>
     </dependency>

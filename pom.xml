@@ -50,26 +50,31 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.plugin.hibernate.tools</groupId>
-        <artifactId>plugin-hibernate-tools</artifactId>
+        <groupId>org.jboss.forge.addon</groupId>
+        <artifactId>hibernate-tools</artifactId>
         <version>${project.version}</version>
         <classifier>forge-addon</classifier>
       </dependency>
       <dependency>
-        <groupId>org.plugin.hibernate.tools</groupId>
-        <artifactId>plugin-hibernate-tools-api</artifactId>
+        <groupId>org.jboss.forge.addon</groupId>
+        <artifactId>hibernate-tools-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.plugin.hibernate.tools</groupId>
-        <artifactId>plugin-hibernate-tools-impl</artifactId>
+        <groupId>org.jboss.forge.addon</groupId>
+        <artifactId>hibernate-tools-impl</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.plugin.hibernate.tools</groupId>
-        <artifactId>plugin-hibernate-tools-spi</artifactId>
+        <groupId>org.jboss.forge.addon</groupId>
+        <artifactId>hibernate-tools-spi</artifactId>
         <version>${project.version}</version>
         <classifier>forge-addon</classifier>
+      </dependency>
+      <dependency>
+         <groupId>org.jboss.forge.addon</groupId>
+         <artifactId>ui-api</artifactId>
+         <version>${version.furnace}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
