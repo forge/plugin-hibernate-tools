@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
-import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
+import org.jboss.forge.addon.ui.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.hints.InputType;
@@ -15,7 +15,7 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-public class GenerateEntitiesCommand extends AbstractProjectCommand
+public class GenerateEntitiesCommand extends AbstractUICommand
 {
 
    private static String[] COMMAND_CATEGORY = { "Java EE", "Generation" };
@@ -37,10 +37,10 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      Project project = getSelectedProject(builder.getUIContext());
-      MetadataFacet facet = project.getFacet(MetadataFacet.class);
-      String topLevelPackage = facet.getTopLevelPackage();
-      targetPackage.setDefaultValue(topLevelPackage);
+//      Project project = getSelectedProject(builder.getUIContext());
+//      MetadataFacet facet = project.getFacet(MetadataFacet.class);
+//      String topLevelPackage = facet.getTopLevelPackage();
+//      targetPackage.setDefaultValue(topLevelPackage);
    }
 
    @Override
@@ -54,9 +54,9 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand
       return targetPackage.getValue();
    }
 
-   @Override
-   protected boolean isProjectRequired()
-   {
-      return true;
-   }
+//   @Override
+//   protected boolean isProjectRequired()
+//   {
+//      return true;
+//   }
 }
