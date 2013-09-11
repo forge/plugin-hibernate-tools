@@ -9,6 +9,20 @@
   </parent>
   <artifactId>hibernate-tools</artifactId>
   <dependencies>
+    <!-- Addon Dependencies -->
+    <dependency>
+      <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>ui</artifactId>
+      <classifier>forge-addon</classifier>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>projects</artifactId>
+      <classifier>forge-addon</classifier>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.forge.furnace.container</groupId>
       <artifactId>cdi</artifactId>
