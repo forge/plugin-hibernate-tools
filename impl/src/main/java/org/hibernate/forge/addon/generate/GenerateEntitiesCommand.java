@@ -2,9 +2,10 @@ package org.hibernate.forge.addon.generate;
 
 import javax.inject.Inject;
 
+import org.jboss.forge.addon.javaee.facets.PersistenceFacet;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
-import org.jboss.forge.addon.ui.AbstractUICommand;
+import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
 import org.jboss.forge.addon.ui.hints.InputType;
@@ -15,10 +16,10 @@ import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 
-public class GenerateEntitiesCommand extends AbstractUICommand
+public class GenerateEntitiesCommand extends AbstractProjectCommand
 {
 
-   private static String[] COMMAND_CATEGORY = { "Java EE", "Generation" };
+   private static String[] COMMAND_CATEGORY = { "Java EE", "Generate" };
    private static String COMMAND_NAME = "Entities from Tables";
    private static String COMMAND_DESCRIPTION = "Command to generate Java EE entities from database tables.";
 
@@ -37,16 +38,17 @@ public class GenerateEntitiesCommand extends AbstractUICommand
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-//      Project project = getSelectedProject(builder.getUIContext());
-//      MetadataFacet facet = project.getFacet(MetadataFacet.class);
-//      String topLevelPackage = facet.getTopLevelPackage();
-//      targetPackage.setDefaultValue(topLevelPackage);
+      Project project = getSelectedProject(builder.getUIContext());
+      MetadataFacet facet = project.getFacet(MetadataFacet.class);
+      String topLevelPackage = facet.getTopLevelPackage();
+      targetPackage.setDefaultValue(topLevelPackage);
+      builder.add(targetPackage);
    }
 
    @Override
    public Result execute(UIContext context)
    {
-      return Results.success("Paramters " + getParameters() + " are captured.");
+      return Results.success("Parameters " + getParameters() + " are captured.");
    }
 
    protected String getParameters()
@@ -54,9 +56,21 @@ public class GenerateEntitiesCommand extends AbstractUICommand
       return targetPackage.getValue();
    }
 
-//   @Override
-//   protected boolean isProjectRequired()
-//   {
-//      return true;
-//   }
+   @Override
+   protected boolean isProjectRequired()
+   {
+      return true;
+   }
+   
+   @Override
+   public boolean isEnabled(UIContext context)
+   {
+      Project project = getSelectedProject(context);
+      if (project != null) {
+         return project.hasFacet(PersistenceFacet.class) && super.isEnabled(context);
+      } else {
+         return false;
+      }
+   }
+   
 }
