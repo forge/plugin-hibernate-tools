@@ -47,8 +47,17 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.forge.addon</groupId>
+      <artifactId>parser-java-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.forge.addon</groupId>
       <artifactId>javaee-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-tools</artifactId>
+    </dependency> 
   </dependencies>
 </project>
