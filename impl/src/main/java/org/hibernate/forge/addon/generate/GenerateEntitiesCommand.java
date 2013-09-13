@@ -16,7 +16,7 @@ import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
-import org.hibernate.forge.addon.util.ConnectionProfile;
+import org.hibernate.forge.addon.connections.ConnectionProfile;
 import org.hibernate.forge.addon.util.DelegatingDriver;
 import org.hibernate.forge.addon.util.UrlClassLoaderExecutor;
 import org.hibernate.tool.hbm2x.ArtifactCollector;

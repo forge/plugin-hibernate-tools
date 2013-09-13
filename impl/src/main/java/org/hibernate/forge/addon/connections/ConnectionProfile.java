@@ -1,4 +1,4 @@
-package org.hibernate.forge.addon.util;
+package org.hibernate.forge.addon.connections;
 
 public class ConnectionProfile {
 	
