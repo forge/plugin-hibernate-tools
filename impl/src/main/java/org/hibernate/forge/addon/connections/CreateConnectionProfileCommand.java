@@ -22,8 +22,8 @@ public class CreateConnectionProfileCommand extends AbstractUICommand
    private static final String COMMAND_DESCRIPTION = "Command to create a database connectin profile.";
 
    @Inject
-   private ConnectionProfileHelper connectionProfileHelper;
-   
+   private ConnectionProfileManager connectionProfileHelper;
+
    @Inject
    @WithAttributes(
             label = "Connection Name",
@@ -88,20 +88,20 @@ public class CreateConnectionProfileCommand extends AbstractUICommand
    public void initializeUI(UIBuilder builder) throws Exception
    {
       builder
-      .add(name)
-      .add(jdbcUrl)
-      .add(userName)
-      .add(userPassword)
-      .add(hibernateDialect)
-      .add(driverLocation)
-      .add(driverClass);
-      
+               .add(name)
+               .add(jdbcUrl)
+               .add(userName)
+               .add(userPassword)
+               .add(hibernateDialect)
+               .add(driverLocation)
+               .add(driverClass);
+
    }
-   
+
    @Override
    public Result execute(UIContext context) throws Exception
    {
-      Map<String, ConnectionProfile> connectionProfiles = 
+      Map<String, ConnectionProfile> connectionProfiles =
                connectionProfileHelper.loadConnectionProfiles();
       ConnectionProfile connectionProfile = new ConnectionProfile();
       connectionProfile.name = name.getValue();
@@ -113,9 +113,9 @@ public class CreateConnectionProfileCommand extends AbstractUICommand
       connectionProfiles.put(name.getValue(), connectionProfile);
       connectionProfileHelper.saveConnectionProfiles(connectionProfiles.values());
       return Results.success(
-               "Connection profile " + 
-               connectionProfile.name +
-               " has been saved succesfully");
+               "Connection profile " +
+                        connectionProfile.name +
+                        " has been saved succesfully");
    }
 
 }
