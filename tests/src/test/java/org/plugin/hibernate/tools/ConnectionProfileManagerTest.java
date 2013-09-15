@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
-public class ConnectionProfileHelperTest
+public class ConnectionProfileManagerTest
 {
 
    @Deployment
