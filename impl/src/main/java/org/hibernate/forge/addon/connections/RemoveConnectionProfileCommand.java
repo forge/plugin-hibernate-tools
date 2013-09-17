@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import org.jboss.forge.addon.ui.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
-import org.jboss.forge.addon.ui.input.UISelectOne;
+import org.jboss.forge.addon.ui.input.UISelectMany;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.Result;
 import org.jboss.forge.addon.ui.result.Results;
@@ -30,9 +30,8 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    @Inject
    @WithAttributes(
             label = "Connection Name",
-            description = "The name of the database connection provile you want to remove.",
-            required = true)
-   private UISelectOne<String> name;
+            description = "The name of the database connection profiles you want to remove.")
+   private UISelectMany<String> names;
 
 
    @Override
@@ -49,20 +48,37 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    public void initializeUI(UIBuilder builder) throws Exception
    {
       profiles = connectionProfileManager.loadConnectionProfiles();
-      name.setValueChoices(profiles.keySet());
-      builder.add(name);
+      names.setValueChoices(profiles.keySet());
+      builder.add(names);
    }
 
    @Override
    public Result execute(UIContext context) throws Exception
    {
-      ConnectionProfile selectedProfile = profiles.get(name.getValue());
-      profiles.remove(selectedProfile.name);
+      Iterable<String> selection = names.getValue();
+      StringBuffer sb = new StringBuffer();
+      for (String name : selection) {
+         profiles.remove(name);
+         sb.append(name + ", ");
+      }
       connectionProfileManager.saveConnectionProfiles(profiles.values());
-      return Results.success(
-               "Connection profile " +
-                        selectedProfile.name +
-                        " has been removed succesfully");
+      if (sb.length() > 2) {
+         sb.setLength(sb.length() - 2);
+      }
+      String message = "Connection profile";
+      String removedProfiles = sb.toString();
+      if (removedProfiles.contains(", ")) {
+         int lastIndex = removedProfiles.lastIndexOf(',');
+         removedProfiles = 
+                  removedProfiles.substring(0, lastIndex) + 
+                  " and" + 
+                  removedProfiles.substring(lastIndex + 1);
+         message += "s " + removedProfiles + " have";
+      } else {
+         message += " " + removedProfiles + " has";
+      }
+      message += " been removed succesfully";
+      return Results.success(message);
    }
 
 }
