@@ -111,9 +111,6 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
       descriptor.targetPackage = targetPackage.getValue();
       descriptor.connectionProfileName = connectionProfile.getValue();
       descriptor.selectedProject = getSelectedProject(context);
-//      context.setAttribute("targetPackage", targetPackage.getValue());
-//      context.setAttribute("connectionProfile", connectionProfile.getValue());
-//      context.setAttribute("selectedProject", getSelectedProject(context));
       return Results.navigateTo(ConnectionProfileDetailsStep.class);
    }
 
