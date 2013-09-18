@@ -70,6 +70,9 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
       connectionProfile.setValue("");
       builder.add(targetPackage).add(connectionProfile);
    }
+   
+   @Inject
+   private GenerateEntitiesCommandDescriptor descriptor;
 
    @Override
    public Result execute(UIContext context)
@@ -105,9 +108,12 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
    @Override
    public NavigationResult next(UIContext context) throws Exception
    {
-      context.setAttribute("targetPackage", targetPackage.getValue());
-      context.setAttribute("connectionProfile", connectionProfile.getValue());
-      context.setAttribute("selectedProject", getSelectedProject(context));
+      descriptor.targetPackage = targetPackage.getValue();
+      descriptor.connectionProfileName = connectionProfile.getValue();
+      descriptor.selectedProject = getSelectedProject(context);
+//      context.setAttribute("targetPackage", targetPackage.getValue());
+//      context.setAttribute("connectionProfile", connectionProfile.getValue());
+//      context.setAttribute("selectedProject", getSelectedProject(context));
       return Results.navigateTo(ConnectionProfileDetailsStep.class);
    }
 

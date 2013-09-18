@@ -108,22 +108,23 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
    
    @Inject
    private ConnectionProfileManager manager;
+   
+   @Inject
+   private GenerateEntitiesCommandDescriptor descriptor;
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      Object obj = builder.getUIContext().getAttribute("connectionProfile");
-      if (obj != null && obj instanceof String) {
-         String name  = (String)obj;
-         ConnectionProfile cp = manager.loadConnectionProfiles().get(name);
-         if (cp != null) {
-            jdbcUrl.setValue(cp.url);
-            userName.setValue(cp.user);
-            userPassword.setValue(cp.password);
-            hibernateDialect.setValue(cp.dialect);
-            driverLocation.setValue(cp.path);
-            driverClass.setValue(cp.driver);
-         }
+      ConnectionProfile cp = 
+               manager.loadConnectionProfiles().get(
+                        descriptor.connectionProfileName);
+      if (cp != null) {
+         jdbcUrl.setValue(cp.url);
+         userName.setValue(cp.user);
+         userPassword.setValue(cp.password);
+         hibernateDialect.setValue(cp.dialect);
+         driverLocation.setValue(cp.path);
+         driverClass.setValue(cp.driver);
       }
       builder
             .add(jdbcUrl)
@@ -150,15 +151,13 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
          t.printStackTrace();
          return Results.fail("An unexpected error happened during reverse engineering.");
       }
-      exportNewEntities(jmdc, getSelectedProject(context));
+      exportNewEntities(jmdc, descriptor.selectedProject);
       return Results.success("Entities are generated succesfully.");
    }
 
    @Override
    public void validate(UIValidationContext context)
    {
-      // TODO Auto-generated method stub
-
    }
 
    private ConnectionProfile buildConnectionProfile()
@@ -190,11 +189,10 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
 
    private ReverseEngineeringStrategy createReverseEngineeringStrategy(UIContext context)
    {
-      String targetPackage = (String)context.getAttribute("targetPackage");
       ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
       ReverseEngineeringSettings revengsettings =
                new ReverseEngineeringSettings(strategy)
-                        .setDefaultPackageName(targetPackage)
+                        .setDefaultPackageName(descriptor.targetPackage)
                         .setDetectManyToMany(true)
                         .setDetectOneToOne(true)
                         .setDetectOptimisticLock(true);
@@ -249,10 +247,6 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
       return urls.toArray(new URL[urls.size()]);
    }
    
-   private Project getSelectedProject(UIContext context) {
-      return (Project)context.getAttribute("selectedProject");
-   }
-
    private void exportNewEntities(JDBCMetaDataConfiguration jmdc, Project project)
    {
       Iterator<?> iter = jmdc.getTableMappings();
