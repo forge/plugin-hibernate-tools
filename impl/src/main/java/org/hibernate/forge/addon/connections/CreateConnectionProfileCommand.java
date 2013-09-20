@@ -1,6 +1,5 @@
 package org.hibernate.forge.addon.connections;
 
-
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -76,10 +75,10 @@ public class CreateConnectionProfileCommand extends AbstractUICommand
    private UIInput<String> driverClass;
 
    @Override
-   public Metadata getMetadata()
+   public Metadata getMetadata(UIContext context)
    {
       return Metadata
-               .from(super.getMetadata(), getClass())
+               .from(super.getMetadata(context), getClass())
                .name(COMMAND_NAME)
                .description(COMMAND_DESCRIPTION)
                .category(Categories.create(COMMAND_CATEGORY));

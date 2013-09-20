@@ -71,7 +71,7 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
    }
 
    @Override
-   public UICommandMetadata getMetadata()
+   public UICommandMetadata getMetadata(UIContext context)
    {
       return Metadata
                .forCommand(getClass())
@@ -84,23 +84,24 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
    {
       return true;
    }
-   
+
    @Inject
    private ConnectionProfileManager manager;
-   
+
    @Inject
    private GenerateEntitiesCommandDescriptor descriptor;
-   
+
    @Inject
    private GenerateEntitiesCommandExecutor executor;
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      ConnectionProfile cp = 
+      ConnectionProfile cp =
                manager.loadConnectionProfiles().get(
                         descriptor.connectionProfileName);
-      if (cp != null) {
+      if (cp != null)
+      {
          jdbcUrl.setValue(cp.url);
          userName.setValue(cp.user);
          userPassword.setValue(cp.password);
@@ -109,17 +110,17 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
          driverClass.setValue(cp.driver);
       }
       builder
-            .add(jdbcUrl)
-            .add(userName)
-            .add(userPassword)
-            .add(hibernateDialect)
-            .add(driverLocation)
-            .add(driverClass);
+               .add(jdbcUrl)
+               .add(userName)
+               .add(userPassword)
+               .add(hibernateDialect)
+               .add(driverLocation)
+               .add(driverClass);
    }
 
    @Override
    public Result execute(UIContext context)
-   { 
+   {
       buildConnectionProfile();
       return executor.execute(context);
    }

@@ -36,7 +36,7 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
             description = "The name of the target package in which to generate the entities",
             required = true)
    private UIInput<String> targetPackage;
-   
+
    @Inject
    @WithAttributes(
             label = "Connection Profile",
@@ -44,18 +44,18 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
    private UISelectOne<String> connectionProfile;
 
    @Override
-   public Metadata getMetadata()
+   public Metadata getMetadata(UIContext context)
    {
       return Metadata
-               .from(super.getMetadata(), getClass())
+               .from(super.getMetadata(context), getClass())
                .name(COMMAND_NAME)
                .description(COMMAND_DESCRIPTION)
                .category(Categories.create(COMMAND_CATEGORY));
    }
-   
+
    @Inject
    private ConnectionProfileManager manager;
-   
+
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
@@ -70,7 +70,7 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements U
       connectionProfile.setValue("");
       builder.add(targetPackage).add(connectionProfile);
    }
-   
+
    @Inject
    private GenerateEntitiesCommandDescriptor descriptor;
 

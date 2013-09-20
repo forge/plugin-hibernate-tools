@@ -1,6 +1,5 @@
 package org.hibernate.forge.addon.connections;
 
-
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
 
    @Inject
    private ConnectionProfileManager connectionProfileManager;
-   
+
    private Map<String, ConnectionProfile> profiles;
 
    @Inject
@@ -33,12 +32,11 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
             description = "The name of the database connection profiles you want to remove.")
    private UISelectMany<String> names;
 
-
    @Override
-   public Metadata getMetadata()
+   public Metadata getMetadata(UIContext context)
    {
       return Metadata
-               .from(super.getMetadata(), getClass())
+               .from(super.getMetadata(context), getClass())
                .name(COMMAND_NAME)
                .description(COMMAND_DESCRIPTION)
                .category(Categories.create(COMMAND_CATEGORY));
@@ -57,24 +55,29 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    {
       Iterable<String> selection = names.getValue();
       StringBuffer sb = new StringBuffer();
-      for (String name : selection) {
+      for (String name : selection)
+      {
          profiles.remove(name);
          sb.append(name + ", ");
       }
       connectionProfileManager.saveConnectionProfiles(profiles.values());
-      if (sb.length() > 2) {
+      if (sb.length() > 2)
+      {
          sb.setLength(sb.length() - 2);
       }
       String message = "Connection profile";
       String removedProfiles = sb.toString();
-      if (removedProfiles.contains(", ")) {
+      if (removedProfiles.contains(", "))
+      {
          int lastIndex = removedProfiles.lastIndexOf(',');
-         removedProfiles = 
-                  removedProfiles.substring(0, lastIndex) + 
-                  " and" + 
-                  removedProfiles.substring(lastIndex + 1);
+         removedProfiles =
+                  removedProfiles.substring(0, lastIndex) +
+                           " and" +
+                           removedProfiles.substring(lastIndex + 1);
          message += "s " + removedProfiles + " have";
-      } else {
+      }
+      else
+      {
          message += " " + removedProfiles + " has";
       }
       message += " been removed succesfully";
