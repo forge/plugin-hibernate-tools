@@ -1,11 +1,11 @@
 package org.hibernate.forge.addon.generate;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.forge.addon.util.DelegatingDriver;
 import org.hibernate.forge.addon.util.UrlClassLoaderExecutor;
 
@@ -71,11 +71,36 @@ public class GenerateEntitiesHelper
       return result;
    }
    
+   public synchronized void buildMappings(
+            URL[] urls, 
+            final Driver driver, 
+            final JDBCMetaDataConfiguration result)
+   {
+      reset();
+      UrlClassLoaderExecutor.execute(urls, new Runnable() {
+         @Override
+         public void run()
+         {
+            try
+            {
+               DriverManager.registerDriver(new DelegatingDriver(driver));
+               result.readFromJDBC();
+               result.buildMappings();
+            }
+            catch (SQLException e)
+            {
+               // registering driver should not pose any problems at this point
+            }
+         }
+     });
+   }
+
    private void reset() {
       driver = null;
       instantiationException = null;
       illegalAccessException = null;
       classNotFoundException = null;
+      sqlException = null;
    }
 
 }

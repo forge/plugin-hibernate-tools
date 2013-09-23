@@ -6,6 +6,7 @@ import java.net.URL;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.inject.Inject;
 
@@ -72,6 +73,12 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
             required = true)
    private UIInput<String> driverClass;
 
+   @Inject
+   private ConnectionProfileManager manager;
+
+   @Inject
+   private GenerateEntitiesCommandDescriptor descriptor;
+   
    @Override
    public UICommandMetadata getMetadata(UIContext context)
    {
@@ -86,12 +93,6 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
    {
       return true;
    }
-
-   @Inject
-   private ConnectionProfileManager manager;
-
-   @Inject
-   private GenerateEntitiesCommandDescriptor descriptor;
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
@@ -135,10 +136,30 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
       File file = getDriverLocation(context);
       if (file == null) return;
       URL[] urls = getDriverUrls(file, context);
-      if (urls == null) return;
+      if (urls == null) {
+         return;
+      } else {
+         descriptor.urls = urls;
+      } 
       Driver driver = getDriver(urls, context);
-      if (driver == null) return;
-    }
+      if (driver == null) {
+         return;
+      } else {
+         descriptor.driver = driver;
+      }
+      descriptor.connectionProperties = createConnectionProperties();
+   }
+   
+   private Properties createConnectionProperties() {
+      Properties result = new Properties();
+      result.setProperty("hibernate.connection.driver_class", driverClass.getValue());
+      result.setProperty("hibernate.connection.username", userName.getValue());
+      result.setProperty("hibernate.dialect", hibernateDialect.getValue());
+      result.setProperty("hibernate.connection.password",
+               userPassword.getValue() == null ? "" : userPassword.getValue());
+      result.setProperty("hibernate.connection.url", jdbcUrl.getValue());
+      return result;
+   }
    
    private File getDriverLocation(UIValidationContext context) {
       String path = driverLocation.getValue();
@@ -150,71 +171,6 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
       return file;
    }
 
-//   private JDBCMetaDataConfiguration configureMetaData()
-//   {
-//      JDBCMetaDataConfiguration jmdc = new JDBCMetaDataConfiguration();
-//      Properties properties = new Properties();
-//      properties.setProperty("hibernate.connection.driver_class", driverClass.getValue());
-//      properties.setProperty("hibernate.connection.username", userName.getValue());
-//      properties.setProperty("hibernate.dialect", hibernateDialect.getValue());
-//      properties.setProperty("hibernate.connection.password",
-//               userPassword.getValue() == null ? "" : userPassword.getValue());
-//      properties.setProperty("hibernate.connection.url", jdbcUrl.getValue());
-//      jmdc.setProperties(properties);
-//      jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy());
-//      return jmdc;
-//   }
-//
-//   private ReverseEngineeringStrategy createReverseEngineeringStrategy()
-//   {
-//      ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
-//      ReverseEngineeringSettings revengsettings =
-//               new ReverseEngineeringSettings(strategy)
-//                        .setDefaultPackageName(descriptor.targetPackage)
-//                        .setDetectManyToMany(true)
-//                        .setDetectOneToOne(true)
-//                        .setDetectOptimisticLock(true);
-//      strategy.setSettings(revengsettings);
-//      return strategy;
-//   }
-//
-//   private void doReverseEngineering() throws Throwable
-//   {
-//      try
-//      {
-//         UrlClassLoaderExecutor.execute(getDriverUrls(), new Runnable()
-//         {
-//            @Override
-//            public void run()
-//            {
-//               try
-//               {
-//                  Driver jdbcDriver = (Driver) Class.forName(
-//                           driver,
-//                           true,
-//                           Thread.currentThread().getContextClassLoader()).newInstance();
-//                  DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
-//                  jmdc.readFromJDBC();
-//                  jmdc.buildMappings();
-//               }
-//               catch (Exception e)
-//               {
-//                  e.printStackTrace();
-//                  throw new RuntimeException("Exception in runnable", e);
-//               }
-//            }
-//         });
-//      }
-//      catch (RuntimeException e)
-//      {
-//         e.printStackTrace();
-//         if ("Exception in runnable".equals(e.getMessage()) && e.getCause() != null)
-//         {
-//            throw e.getCause();
-//         }
-//      }
-//   }
-//
    private URL[] getDriverUrls(File file, UIValidationContext context)
    {
       try {
@@ -265,35 +221,5 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
       }
       return result;
    }
-   
-   
-   
-//   private class ReverseEngineeringExecutor implements Runnable {
-//      ReverseEngineeringExecutor(UIContext context) {
-//         
-//      }
-//      @Override
-//      public void run()
-//      {
-//         try
-//         {
-//            Driver jdbcDriver = (Driver) Class.forName(
-//                     driver,
-//                     true,
-//                     Thread.currentThread().getContextClassLoader()).newInstance();
-//            DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
-//            jmdc.readFromJDBC();
-//            jmdc.buildMappings();
-//         }
-//         catch (Exception e)
-//         {
-//            e.printStackTrace();
-//            throw new RuntimeException("Exception in runnable", e);
-//         }
-//      }
-//      private Class getDriverClass() {
-//         return Class.forName(arg0) 
-//      }
-//   }
    
 }

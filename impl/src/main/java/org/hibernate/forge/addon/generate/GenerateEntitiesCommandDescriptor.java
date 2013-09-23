@@ -1,6 +1,9 @@
 package org.hibernate.forge.addon.generate;
 
-import org.hibernate.cfg.JDBCMetaDataConfiguration;
+import java.net.URL;
+import java.sql.Driver;
+import java.util.Properties;
+
 import org.hibernate.forge.addon.connections.ConnectionProfile;
 import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.ui.cdi.CommandScoped;
@@ -12,5 +15,8 @@ public class GenerateEntitiesCommandDescriptor
    String connectionProfileName = "";
    Project selectedProject;
    ConnectionProfile connectionProfile;
-   JDBCMetaDataConfiguration jmdc;
+   URL[] urls;
+   Driver driver;
+   Properties connectionProperties;
+
 }
