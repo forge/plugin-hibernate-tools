@@ -36,7 +36,7 @@ public class GenerateEntitiesCommandExecutor
    public Result execute(UIContext context) {      
       ConnectionProfile cp = descriptor.connectionProfile;
       JDBCMetaDataConfiguration jmdc = configureMetaData(cp);
-      jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy(context));
+      jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy());
       try
       {
          doReverseEngineering(cp.driver, cp.path, jmdc);
@@ -65,7 +65,7 @@ public class GenerateEntitiesCommandExecutor
       return jmdc;
    }
 
-   private ReverseEngineeringStrategy createReverseEngineeringStrategy(UIContext context)
+   private ReverseEngineeringStrategy createReverseEngineeringStrategy()
    {
       ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
       ReverseEngineeringSettings revengsettings =

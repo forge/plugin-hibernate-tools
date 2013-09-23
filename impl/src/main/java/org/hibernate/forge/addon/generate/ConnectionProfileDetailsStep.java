@@ -1,5 +1,12 @@
 package org.hibernate.forge.addon.generate;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.sql.Driver;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import org.hibernate.forge.addon.connections.ConnectionProfile;
@@ -12,6 +19,7 @@ import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.NavigationResult;
 import org.jboss.forge.addon.ui.result.Result;
+import org.jboss.forge.addon.ui.result.Results;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizardStep;
 
@@ -65,12 +73,6 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
    private UIInput<String> driverClass;
 
    @Override
-   public NavigationResult next(UIContext context) throws Exception
-   {
-      return null;
-   }
-
-   @Override
    public UICommandMetadata getMetadata(UIContext context)
    {
       return Metadata
@@ -90,9 +92,6 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
 
    @Inject
    private GenerateEntitiesCommandDescriptor descriptor;
-
-   @Inject
-   private GenerateEntitiesCommandExecutor executor;
 
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
@@ -120,25 +119,181 @@ public class ConnectionProfileDetailsStep implements UIWizardStep
 
    @Override
    public Result execute(UIContext context)
+   { 
+      return Results.success();
+   }
+
+   @Override
+   public NavigationResult next(UIContext context) throws Exception
    {
-      buildConnectionProfile();
-      return executor.execute(context);
+      return Results.navigateTo(DatabaseTableSelectionStep.class);
    }
 
    @Override
    public void validate(UIValidationContext context)
    {
+      File file = getDriverLocation(context);
+      if (file == null) return;
+      URL[] urls = getDriverUrls(file, context);
+      if (urls == null) return;
+      Driver driver = getDriver(urls, context);
+      if (driver == null) return;
+    }
+   
+   private File getDriverLocation(UIValidationContext context) {
+      String path = driverLocation.getValue();
+      File file = new File(path);
+      if (!file.exists()) {
+         context.addValidationError(driverLocation, "The location '" + path + "' does not exist");
+         return null;
+      }
+      return file;
    }
 
-   private void buildConnectionProfile()
+//   private JDBCMetaDataConfiguration configureMetaData()
+//   {
+//      JDBCMetaDataConfiguration jmdc = new JDBCMetaDataConfiguration();
+//      Properties properties = new Properties();
+//      properties.setProperty("hibernate.connection.driver_class", driverClass.getValue());
+//      properties.setProperty("hibernate.connection.username", userName.getValue());
+//      properties.setProperty("hibernate.dialect", hibernateDialect.getValue());
+//      properties.setProperty("hibernate.connection.password",
+//               userPassword.getValue() == null ? "" : userPassword.getValue());
+//      properties.setProperty("hibernate.connection.url", jdbcUrl.getValue());
+//      jmdc.setProperties(properties);
+//      jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy());
+//      return jmdc;
+//   }
+//
+//   private ReverseEngineeringStrategy createReverseEngineeringStrategy()
+//   {
+//      ReverseEngineeringStrategy strategy = new DefaultReverseEngineeringStrategy();
+//      ReverseEngineeringSettings revengsettings =
+//               new ReverseEngineeringSettings(strategy)
+//                        .setDefaultPackageName(descriptor.targetPackage)
+//                        .setDetectManyToMany(true)
+//                        .setDetectOneToOne(true)
+//                        .setDetectOptimisticLock(true);
+//      strategy.setSettings(revengsettings);
+//      return strategy;
+//   }
+//
+//   private void doReverseEngineering() throws Throwable
+//   {
+//      try
+//      {
+//         UrlClassLoaderExecutor.execute(getDriverUrls(), new Runnable()
+//         {
+//            @Override
+//            public void run()
+//            {
+//               try
+//               {
+//                  Driver jdbcDriver = (Driver) Class.forName(
+//                           driver,
+//                           true,
+//                           Thread.currentThread().getContextClassLoader()).newInstance();
+//                  DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
+//                  jmdc.readFromJDBC();
+//                  jmdc.buildMappings();
+//               }
+//               catch (Exception e)
+//               {
+//                  e.printStackTrace();
+//                  throw new RuntimeException("Exception in runnable", e);
+//               }
+//            }
+//         });
+//      }
+//      catch (RuntimeException e)
+//      {
+//         e.printStackTrace();
+//         if ("Exception in runnable".equals(e.getMessage()) && e.getCause() != null)
+//         {
+//            throw e.getCause();
+//         }
+//      }
+//   }
+//
+   private URL[] getDriverUrls(File file, UIValidationContext context)
    {
-      descriptor.connectionProfile = new ConnectionProfile();
-      descriptor.connectionProfile.url = jdbcUrl.getValue();
-      descriptor.connectionProfile.user = userName.getValue();
-      descriptor.connectionProfile.password = userPassword.getValue();
-      descriptor.connectionProfile.dialect = hibernateDialect.getValue();
-      descriptor.connectionProfile.driver = driverClass.getValue();
-      descriptor.connectionProfile.path = driverLocation.getValue();
+      try {
+         ArrayList<URL> result = new ArrayList<URL>(1);
+         result.add(file.toURI().toURL());  
+         return result.toArray(new URL[1]);
+      } catch (MalformedURLException e) {
+         context.addValidationError(driverLocation, 
+                  "The location '" + 
+                  driverLocation.getValue() + 
+                  "' does not point to a valid file");         
+         return null;
+      }
    }
-
+   
+   @Inject 
+   private GenerateEntitiesHelper helper;
+   
+   private Driver getDriver(URL[] urls, UIValidationContext context) {
+      Driver result = null;
+      String className = driverClass.getValue();
+      try
+      {
+         result = helper.getDriver(className, urls);
+      }
+      catch (InstantiationException e)
+      {
+         context.addValidationError(
+                  driverClass, 
+                  "The class '" + className + "' cannot not be instantiated");
+      }
+      catch (IllegalAccessException e)
+      {
+         context.addValidationError(
+                  driverClass, 
+                  "Illegal access for class '" + className + "'");
+      }
+      catch (ClassNotFoundException e)
+      {
+         context.addValidationError(
+                  driverClass, 
+                  "The class '" + className + "' does not exist");
+      }
+      catch (SQLException e) {
+         context.addValidationError(
+                  driverClass, 
+                  "An unexpected SQLException happened while registering class '" + className + "'");
+      }
+      return result;
+   }
+   
+   
+   
+//   private class ReverseEngineeringExecutor implements Runnable {
+//      ReverseEngineeringExecutor(UIContext context) {
+//         
+//      }
+//      @Override
+//      public void run()
+//      {
+//         try
+//         {
+//            Driver jdbcDriver = (Driver) Class.forName(
+//                     driver,
+//                     true,
+//                     Thread.currentThread().getContextClassLoader()).newInstance();
+//            DriverManager.registerDriver(new DelegatingDriver(jdbcDriver));
+//            jmdc.readFromJDBC();
+//            jmdc.buildMappings();
+//         }
+//         catch (Exception e)
+//         {
+//            e.printStackTrace();
+//            throw new RuntimeException("Exception in runnable", e);
+//         }
+//      }
+//      private Class getDriverClass() {
+//         return Class.forName(arg0) 
+//      }
+//   }
+   
 }

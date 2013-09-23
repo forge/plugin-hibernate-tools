@@ -81,7 +81,7 @@ public class CreateConnectionProfileCommand extends AbstractUICommand
                .from(super.getMetadata(context), getClass())
                .name(COMMAND_NAME)
                .description(COMMAND_DESCRIPTION)
-               .category(Categories.create(COMMAND_CATEGORY));
+               .category(Categories.create("Database", "Connections"));
    }
 
    @Override
