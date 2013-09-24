@@ -1,10 +1,10 @@
 package org.hibernate.forge.addon.generate;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -12,9 +12,14 @@ import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
+import org.hibernate.mapping.PersistentClass;
+import org.hibernate.mapping.Property;
 import org.hibernate.mapping.Table;
 import org.hibernate.tool.hbm2x.ArtifactCollector;
 import org.hibernate.tool.hbm2x.POJOExporter;
+import org.hibernate.tool.hbm2x.pojo.ComponentPOJOClass;
+import org.hibernate.tool.hbm2x.pojo.EntityPOJOClass;
+import org.hibernate.tool.hbm2x.pojo.POJOClass;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
@@ -37,8 +42,7 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    @Inject
    @WithAttributes(
             label = "Database Tables",
-            description = "The database tables for which to generate entities",
-            required = true)
+            description = "The database tables for which to generate entities")
    private UISelectMany<String> databaseTables;
 
    @Override
@@ -95,7 +99,7 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    @Override
    public Result execute(UIContext context)
    { 
-      exportNewEntities();
+      exportSelectedEntities();
       return Results.success();
    }
 
@@ -103,44 +107,70 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    public void validate(UIValidationContext context)
    {
    }
-
-   private void exportNewEntities()
-   {
-      Iterator<?> iter = jmdc.getTableMappings();
-      int count = 0;
-      while (iter.hasNext())
-      {
-         count++;
-         iter.next();
+   
+   private boolean isSelected(Collection<String> selection, POJOClass element) {
+      boolean result = false;
+      if (element.isComponent()) {
+         if (element instanceof ComponentPOJOClass) {
+            ComponentPOJOClass cpc = (ComponentPOJOClass)element;
+            Iterator<?> iterator = cpc.getAllPropertiesIterator();
+            result = true;
+            while (iterator.hasNext()) {
+               Object object = iterator.next();
+               if (object instanceof Property) {
+                  Property property = (Property)object;
+                  String tableName = property.getValue().getTable().getName();
+                  if (!selection.contains(tableName)) {
+                     result = false;
+                     break;
+                  }
+               }
+            }
+         }
+      } else {
+         if (element instanceof EntityPOJOClass) {
+            EntityPOJOClass epc = (EntityPOJOClass)element;
+            Object object = epc.getDecoratedObject();
+            if (object instanceof PersistentClass) {
+               PersistentClass pc = (PersistentClass)object;
+               Table table = pc.getTable();
+               if (selection.contains(table.getName())) {
+                  result = true;
+               }               
+            }
+         }
       }
-      System.out.println("Found " + count + " tables in datasource");
+      return result;
+   }
+   
+   private Collection<String> getSelectedTableNames() {
+      ArrayList<String> result = new ArrayList<String>();
+      Iterator<String> iterator = databaseTables.getValue().iterator();
+      while (iterator.hasNext()) {
+         result.add(iterator.next());
+      }
+      return result;
+   }
+   
+   private void exportSelectedEntities()
+   {     
+      final Collection<String> selectedTableNames = getSelectedTableNames();     
       JavaSourceFacet java = descriptor.selectedProject.getFacet(JavaSourceFacet.class);
       POJOExporter pj = new POJOExporter(jmdc, java.getSourceFolder()
-               .getUnderlyingResourceObject());
+               .getUnderlyingResourceObject()) {
+         @SuppressWarnings("rawtypes")
+         protected void exportPOJO(Map additionalContext, POJOClass element) {
+            if (isSelected(selectedTableNames, element)) {
+               super.exportPOJO(additionalContext, element);
+            }
+         }
+      };
       Properties pojoProperties = new Properties();
       pojoProperties.setProperty("jdk5", "true");
       pojoProperties.setProperty("ejb3", "true");
       pj.setProperties(pojoProperties);
-
-      ArtifactCollector artifacts = new ArtifactCollector()
-      {
-         @Override
-         public void addFile(final File file, final String type)
-         {
-            System.out.println("Generated " + type + " at " + file.getPath());
-            System.out.println("File name is : " + file.getName());
-            super.addFile(file, type);
-         }
-      };
-      pj.setArtifactCollector(artifacts);
+      pj.setArtifactCollector(new ArtifactCollector());
       pj.start();
-      Set<?> fileTypes = artifacts.getFileTypes();
-      for (Iterator<?> iterator = fileTypes.iterator(); iterator.hasNext();)
-      {
-         String type = (String) iterator.next();
-         System.out.println("Generated " + artifacts.getFileCount(type) + " "
-                  + type + " files.");
-      }
    }
 
    private ReverseEngineeringStrategy createReverseEngineeringStrategy()
