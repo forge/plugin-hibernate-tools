@@ -12,6 +12,7 @@ import org.hibernate.cfg.JDBCMetaDataConfiguration;
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy;
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings;
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy;
+import org.hibernate.forge.addon.util.HibernateToolsHelper;
 import org.hibernate.mapping.PersistentClass;
 import org.hibernate.mapping.Property;
 import org.hibernate.mapping.Table;
@@ -70,7 +71,7 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    private GenerateEntitiesCommandDescriptor descriptor;
    
    @Inject
-   private GenerateEntitiesHelper helper;
+   private HibernateToolsHelper helper;
    
    private JDBCMetaDataConfiguration jmdc;
 

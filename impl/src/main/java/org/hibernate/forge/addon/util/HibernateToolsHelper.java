@@ -1,4 +1,4 @@
-package org.hibernate.forge.addon.generate;
+package org.hibernate.forge.addon.util;
 
 import java.net.URL;
 import java.sql.Driver;
@@ -6,10 +6,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import org.hibernate.cfg.JDBCMetaDataConfiguration;
-import org.hibernate.forge.addon.util.DelegatingDriver;
-import org.hibernate.forge.addon.util.UrlClassLoaderExecutor;
 
-public class GenerateEntitiesHelper
+public class HibernateToolsHelper
 {
    
    private Driver driver;
