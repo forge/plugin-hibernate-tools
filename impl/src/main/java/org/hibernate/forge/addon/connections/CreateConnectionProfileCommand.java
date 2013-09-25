@@ -55,7 +55,7 @@ public class CreateConnectionProfileCommand extends ConnectionProfileDetailsPage
                connectionProfileHelper.loadConnectionProfiles();
       ConnectionProfile connectionProfile = new ConnectionProfile();
       connectionProfile.name = name.getValue();
-      connectionProfile.dialect = hibernateDialect.getValue();
+      connectionProfile.dialect = hibernateDialect.getValue().getClassName();
       connectionProfile.driver = driverClass.getValue();
       connectionProfile.path = driverLocation.getValue().getFullyQualifiedName();
       connectionProfile.url = jdbcUrl.getValue();

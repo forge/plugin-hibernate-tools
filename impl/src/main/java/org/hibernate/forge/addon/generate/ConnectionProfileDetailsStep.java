@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.hibernate.forge.addon.connections.ConnectionProfile;
 import org.hibernate.forge.addon.connections.ConnectionProfileDetailsPage;
 import org.hibernate.forge.addon.connections.ConnectionProfileManager;
+import org.hibernate.forge.addon.connections.HibernateDialect;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.ui.context.UIBuilder;
@@ -53,6 +54,7 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
+      super.initializeUI(builder);
       ConnectionProfile cp =
                manager.loadConnectionProfiles().get(
                         descriptor.connectionProfileName);
@@ -61,11 +63,10 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
          jdbcUrl.setValue(cp.url);
          userName.setValue(cp.user);
          userPassword.setValue(cp.password);
-         hibernateDialect.setValue(cp.dialect);
+         hibernateDialect.setValue(HibernateDialect.fromClassName(cp.dialect));
          driverLocation.setValue(createResource(cp.path));
          driverClass.setValue(cp.driver);
       }
-      super.initializeUI(builder);
    }
 
    @Override
@@ -93,7 +94,7 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
       Properties result = new Properties();
       result.setProperty("hibernate.connection.driver_class", driverClass.getValue());
       result.setProperty("hibernate.connection.username", userName.getValue());
-      result.setProperty("hibernate.dialect", hibernateDialect.getValue());
+      result.setProperty("hibernate.dialect", hibernateDialect.getValue().getClassName());
       result.setProperty("hibernate.connection.password",
                userPassword.getValue() == null ? "" : userPassword.getValue());
       result.setProperty("hibernate.connection.url", jdbcUrl.getValue());

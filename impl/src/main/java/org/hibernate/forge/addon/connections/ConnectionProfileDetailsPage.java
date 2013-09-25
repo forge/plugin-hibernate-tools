@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import org.hibernate.forge.addon.util.HibernateToolsHelper;
+import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.input.UIInput;
+import org.jboss.forge.addon.ui.input.UISelectOne;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 
 public class ConnectionProfileDetailsPage
@@ -46,7 +48,7 @@ public class ConnectionProfileDetailsPage
             label = "Hibernate Dialect",
             description = "The Hibernate dialect to use",
             required = true)
-   protected UIInput<String> hibernateDialect;
+   protected UISelectOne<HibernateDialect> hibernateDialect;
 
    @Inject
    @WithAttributes(
@@ -77,6 +79,14 @@ public class ConnectionProfileDetailsPage
                .add(hibernateDialect)
                .add(driverLocation)
                .add(driverClass);
+      hibernateDialect.setItemLabelConverter(new Converter<HibernateDialect, String>()
+      {
+         @Override
+         public String convert(HibernateDialect dialect)
+         {
+            return dialect == null ? null : dialect.getDatabaseName() + " : " + dialect.getClassName();
+         }
+      });
 
    }
    
