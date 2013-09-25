@@ -7,6 +7,7 @@
 
 package org.hibernate.forge.addon.connections;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -17,8 +18,8 @@ import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
 import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
+import org.jboss.forge.ui.test.CommandTester;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,31 +28,26 @@ import org.junit.runner.RunWith;
 public class CreateConnectionProfileCommandTest
 {
 
-   private static final String BEANS_XML = 
-            "<beans>                                                                                  " +
-            "  <alternatives>                                                                         " +
-            "    <class>org.hibernate.forge.addon.connections.MockConnectionProfileManagerImpl</class>" +
-            "  </alternatives>                                                                        " +
-            "</beans>                                                                                 ";    
-   
    @Deployment
    @Dependencies({
             @AddonDependency(name = "org.jboss.forge.furnace.container:cdi"),
             @AddonDependency(name = "org.jboss.forge.addon:ui"),
             @AddonDependency(name = "org.jboss.forge.addon:configuration"),
             @AddonDependency(name = "org.jboss.forge.addon:projects"),
-            @AddonDependency(name = "org.jboss.forge.addon:hibernate-tools")
+            @AddonDependency(name = "org.jboss.forge.addon:hibernate-tools"),
+            @AddonDependency(name = "org.jboss.forge.addon:dependencies"),
+            @AddonDependency(name = "org.jboss.forge.addon:ui-test-harness")
    })
    public static ForgeArchive getDeployment()
    {
       ForgeArchive archive = ShrinkWrap
                .create(ForgeArchive.class)
-               .addBeansXML(
-                        new ByteArrayAsset(
-                                 BEANS_XML.getBytes()))
+               .addBeansXML()
                .addAsAddonDependencies(
                         AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi"),
-                        AddonDependencyEntry.create("org.jboss.forge.addon:hibernate-tools"))
+                        AddonDependencyEntry.create("org.jboss.forge.addon:hibernate-tools"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:dependencies"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:ui-test-harness"))
                .addClass(MockConnectionProfileManagerImpl.class);
       return archive;
    }
@@ -59,15 +55,48 @@ public class CreateConnectionProfileCommandTest
    @Inject
    private ConnectionProfileManager manager;
    
+   @Inject
+   private CommandTester<CreateConnectionProfileCommand> command;
+   
+//   @Inject
+//   private DependencyResolver resolver;
+   
    @Test
    public void testConnectionProfileManager() throws Exception
    {
       Assert.assertNotNull(manager);
       Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
       Assert.assertNotNull(profiles);
-//      Assert.assertEquals(1, profiles.size());
-//      manager.saveConnectionProfiles(new ArrayList<ConnectionProfile>());
-//      profiles = manager.loadConnectionProfiles();
-//      Assert.assertEquals(0, profiles.size());
+      Assert.assertEquals(1, profiles.size());
+      manager.saveConnectionProfiles(new ArrayList<ConnectionProfile>());
+      profiles = manager.loadConnectionProfiles();
+      Assert.assertEquals(0, profiles.size());
    }
+   
+   @Test
+   public void testCreateConnectionProfileCommand() throws Exception {
+      command.setValueFor("name", "test");
+      command.setValueFor("jdbcUrl", "jdbc:h2:~/app-root/data/sakila");
+      command.setValueFor("userName", "sa");
+      command.setValueFor("userPassword", "");
+      command.setValueFor("hibernateDialect", HibernateDialect.fromClassName("org.hibernate.dialect.H2Dialect"));
+//      command.setValueFor("driverLocation", resolveH2DriverJarResource());
+      command.setValueFor("driverClass", "org.h2.Driver");
+//      command.execute(null);
+//      Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
+//      Assert.assertEquals(2, profiles.size());
+//      ConnectionProfile profile = profiles.get("test");
+//      Assert.assertNotNull(profile);
+//      Assert.assertEquals("org.h2.Driver", profile.driver);
+   }
+   
+//   private FileResource<?> resolveH2DriverJarResource() {
+//      DependencyQuery query = DependencyQueryBuilder.create("com.h2database;h2:1.3.167");
+//      Dependency dependency = resolver.resolveArtifact(query);
+//      if (dependency != null) {
+//         return dependency.getArtifact();
+//      } else {
+//         return null;
+//      }
+//   }
 }
