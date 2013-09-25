@@ -5,7 +5,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.plugin.hibernate.tools;
+package org.hibernate.forge.addon.connections;
 
 import java.util.Map;
 
