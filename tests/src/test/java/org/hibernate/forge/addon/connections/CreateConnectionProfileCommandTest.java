@@ -36,6 +36,7 @@ public class CreateConnectionProfileCommandTest
             @AddonDependency(name = "org.jboss.forge.addon:projects"),
             @AddonDependency(name = "org.jboss.forge.addon:hibernate-tools"),
             @AddonDependency(name = "org.jboss.forge.addon:dependencies"),
+            @AddonDependency(name = "org.jboss.forge.addon:maven"),
             @AddonDependency(name = "org.jboss.forge.addon:ui-test-harness")
    })
    public static ForgeArchive getDeployment()
@@ -47,6 +48,7 @@ public class CreateConnectionProfileCommandTest
                         AddonDependencyEntry.create("org.jboss.forge.furnace.container:cdi"),
                         AddonDependencyEntry.create("org.jboss.forge.addon:hibernate-tools"),
                         AddonDependencyEntry.create("org.jboss.forge.addon:dependencies"),
+                        AddonDependencyEntry.create("org.jboss.forge.addon:maven"),
                         AddonDependencyEntry.create("org.jboss.forge.addon:ui-test-harness"))
                .addClass(MockConnectionProfileManagerImpl.class);
       return archive;
