@@ -14,6 +14,11 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.forge.addon.dependencies.Dependency;
+import org.jboss.forge.addon.dependencies.DependencyQuery;
+import org.jboss.forge.addon.dependencies.DependencyResolver;
+import org.jboss.forge.addon.dependencies.builder.DependencyQueryBuilder;
+import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
@@ -60,8 +65,8 @@ public class CreateConnectionProfileCommandTest
    @Inject
    private CommandTester<CreateConnectionProfileCommand> command;
    
-//   @Inject
-//   private DependencyResolver resolver;
+   @Inject
+   private DependencyResolver resolver;
    
    @Test
    public void testConnectionProfileManager() throws Exception
@@ -82,23 +87,23 @@ public class CreateConnectionProfileCommandTest
       command.setValueFor("userName", "sa");
       command.setValueFor("userPassword", "");
       command.setValueFor("hibernateDialect", HibernateDialect.fromClassName("org.hibernate.dialect.H2Dialect"));
-//      command.setValueFor("driverLocation", resolveH2DriverJarResource());
+      command.setValueFor("driverLocation", resolveH2DriverJarResource());
       command.setValueFor("driverClass", "org.h2.Driver");
-//      command.execute(null);
-//      Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
-//      Assert.assertEquals(2, profiles.size());
-//      ConnectionProfile profile = profiles.get("test");
-//      Assert.assertNotNull(profile);
-//      Assert.assertEquals("org.h2.Driver", profile.driver);
+      command.execute(null);
+      Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
+      Assert.assertEquals(2, profiles.size());
+      ConnectionProfile profile = profiles.get("test");
+      Assert.assertNotNull(profile);
+      Assert.assertEquals("org.h2.Driver", profile.driver);
    }
    
-//   private FileResource<?> resolveH2DriverJarResource() {
-//      DependencyQuery query = DependencyQueryBuilder.create("com.h2database;h2:1.3.167");
-//      Dependency dependency = resolver.resolveArtifact(query);
-//      if (dependency != null) {
-//         return dependency.getArtifact();
-//      } else {
-//         return null;
-//      }
-//   }
+   private FileResource<?> resolveH2DriverJarResource() {
+      DependencyQuery query = DependencyQueryBuilder.create("com.h2database:h2:1.3.167");
+      Dependency dependency = resolver.resolveArtifact(query);
+      if (dependency != null) {
+         return dependency.getArtifact();
+      } else {
+         return null;
+      }
+   }
 }
