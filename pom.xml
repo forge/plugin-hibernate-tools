@@ -19,6 +19,7 @@
    <properties>
       <version.furnace>2.0.0-SNAPSHOT</version.furnace>
       <hibernate.tools.version>3.4.0.CR2</hibernate.tools.version>
+      <h2database.version>1.3.167</h2database.version>
    </properties>
 
    <dependencyManagement>
@@ -166,6 +167,12 @@
             <groupId>org.jboss.forge.furnace.test</groupId>
             <artifactId>furnace-test-harness</artifactId>
             <version>${version.furnace}</version>
+            <scope>test</scope>
+         </dependency>
+         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2database.version}</version>
             <scope>test</scope>
          </dependency>
 

@@ -82,6 +82,7 @@ public class CreateConnectionProfileCommandTest
    
    @Test
    public void testCreateConnectionProfileCommand() throws Exception {
+      command.launch();
       command.setValueFor("name", "test");
       command.setValueFor("jdbcUrl", "jdbc:h2:~/app-root/data/sakila");
       command.setValueFor("userName", "sa");

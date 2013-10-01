@@ -55,6 +55,7 @@ public class RemoveConnectionProfileCommandTest
    
    @Test
    public void testRemoveConnectionProfileCommand() throws Exception {
+      command.launch();
       command.setValueFor("names", "dummy");
       command.execute(null);
       Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
