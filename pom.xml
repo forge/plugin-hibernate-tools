@@ -17,7 +17,8 @@
    </modules>
 
    <properties>
-      <version.furnace>2.0.0-SNAPSHOT</version.furnace>
+      <version.furnace>2.0.0.Alpha13</version.furnace>
+      <version.forge>2.0.0.Alpha13</version.forge>
       <hibernate.tools.version>3.4.0.CR2</hibernate.tools.version>
       <h2database.version>1.3.167</h2database.version>
    </properties>
@@ -53,82 +54,82 @@
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>ui</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>projects</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>parser-java</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>javaee</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>configuration</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>maven</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>ui-test-harness</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <classifier>forge-addon</classifier>
          </dependency>         
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>dependencies-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>resources-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>ui-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>projects-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>parser-java-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>configuration-api</artifactId>
-            <version>2.0.0-SNAPSHOT</version>
+            <version>${version.forge}</version>
             <scope>provided</scope>
          </dependency>
          <dependency>
