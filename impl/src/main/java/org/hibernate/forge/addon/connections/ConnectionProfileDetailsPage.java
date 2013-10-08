@@ -3,15 +3,20 @@ package org.hibernate.forge.addon.connections;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.inject.Inject;
 
 import org.hibernate.forge.addon.util.HibernateToolsHelper;
 import org.jboss.forge.addon.convert.Converter;
 import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.ui.UIValidator;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.input.UIInput;
@@ -62,7 +67,7 @@ public class ConnectionProfileDetailsPage
             label = "Driver Class",
             description = "The class name of the JDBC driver",
             required = true)
-   protected UIInput<String> driverClass;
+   protected UISelectOne<String> driverClass;
    
    @Inject
    private HibernateToolsHelper helper;
@@ -87,6 +92,17 @@ public class ConnectionProfileDetailsPage
             return dialect == null ? null : dialect.getDatabaseName() + " : " + dialect.getClassName();
          }
       });
+      driverLocation.setValidator(new UIValidator()
+      { 
+         @Override
+         public void validate(UIValidationContext context)
+         {
+            File file = getDriverLocation(context);
+            if (file != null) {
+               driverClass.setValueChoices(getDriverClassNames(file));
+            }
+         }
+      });
 
    }
    
@@ -106,7 +122,9 @@ public class ConnectionProfileDetailsPage
 
    private File getDriverLocation(UIValidationContext context) {
       FileResource<?> resource = driverLocation.getValue();
-      if (!resource.exists()) {
+      if (resource == null) {
+         return null;
+      } else if (!resource.exists()) {
          context.addValidationError(driverLocation, "The location '" + resource.getFullyQualifiedName() + "' does not exist");
          return null;
       }
@@ -161,4 +179,36 @@ public class ConnectionProfileDetailsPage
       return result;
    }
    
+   private ArrayList<String> getDriverClassNames(File file) {
+      ArrayList<String> result = new ArrayList<String>();
+      try {
+         URL[] urls = new URL[] { file.toURI().toURL() };
+         URLClassLoader classLoader = URLClassLoader.newInstance(urls);
+         Class<?> driverClass = classLoader.loadClass(Driver.class.getName());
+         JarFile jarFile = new JarFile(file);
+         Enumeration<JarEntry> iter = jarFile.entries();
+         while (iter.hasMoreElements()) {
+            JarEntry entry = iter.nextElement();
+            if (entry.getName().endsWith(".class")) { 
+               String name = entry.getName();
+               name = name.substring(0, name.length() - 6);
+               name = name.replace('/', '.');
+               try {
+                  Class<?> clazz = classLoader.loadClass(name);
+                  if (driverClass.isAssignableFrom(clazz)) {
+                     result.add(clazz.getName());
+                  }
+               } catch (ClassNotFoundException cnfe) {
+                  //ignore
+               } catch (NoClassDefFoundError err) {
+                  //ignore
+               }
+            }
+         }
+      } catch (Exception e) {
+         // ignore and return an empty list
+      }
+      return result;
+   }
+
 }
