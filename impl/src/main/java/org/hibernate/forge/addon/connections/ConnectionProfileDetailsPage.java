@@ -119,7 +119,7 @@ public class ConnectionProfileDetailsPage
          return;
       }
    }
-
+   
    private File getDriverLocation(UIValidationContext context) {
       FileResource<?> resource = driverLocation.getValue();
       if (resource == null) {
@@ -179,7 +179,7 @@ public class ConnectionProfileDetailsPage
       return result;
    }
    
-   private ArrayList<String> getDriverClassNames(File file) {
+   protected ArrayList<String> getDriverClassNames(File file) {
       ArrayList<String> result = new ArrayList<String>();
       try {
          URL[] urls = new URL[] { file.toURI().toURL() };

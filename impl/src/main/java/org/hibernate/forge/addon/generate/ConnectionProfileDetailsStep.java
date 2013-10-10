@@ -64,8 +64,15 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
          userName.setValue(cp.user);
          userPassword.setValue(cp.password);
          hibernateDialect.setValue(HibernateDialect.fromClassName(cp.dialect));
-         driverLocation.setValue(createResource(cp.path));
-         driverClass.setValue(cp.driver);
+         FileResource<?> fileResource = createResource(cp.path);
+         if (fileResource != null) {
+            driverLocation.setValue(fileResource);
+            if (fileResource.exists()) {
+               File file = (File)fileResource.getUnderlyingResourceObject();
+               driverClass.setValueChoices(getDriverClassNames(file));
+               driverClass.setValue(cp.driver);
+            }
+         }
       }
    }
 
