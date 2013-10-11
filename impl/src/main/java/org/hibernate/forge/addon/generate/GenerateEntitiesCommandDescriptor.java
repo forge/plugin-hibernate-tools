@@ -1,7 +1,6 @@
 package org.hibernate.forge.addon.generate;
 
 import java.net.URL;
-import java.sql.Driver;
 import java.util.Properties;
 
 import org.hibernate.forge.addon.connections.ConnectionProfile;
@@ -16,7 +15,7 @@ public class GenerateEntitiesCommandDescriptor
    Project selectedProject;
    ConnectionProfile connectionProfile;
    URL[] urls;
-   Driver driver;
+   String driverClass;
    Properties connectionProperties;
 
 }

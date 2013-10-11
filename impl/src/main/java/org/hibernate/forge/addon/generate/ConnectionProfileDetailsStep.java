@@ -9,6 +9,7 @@ import org.hibernate.forge.addon.connections.ConnectionProfile;
 import org.hibernate.forge.addon.connections.ConnectionProfileDetailsPage;
 import org.hibernate.forge.addon.connections.ConnectionProfileManager;
 import org.hibernate.forge.addon.connections.HibernateDialect;
+import org.hibernate.forge.addon.util.HibernateToolsHelper;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.ui.context.UIBuilder;
@@ -35,6 +36,9 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
    
    @Inject 
    private ResourceFactory factory;
+   
+   @Inject
+   private HibernateToolsHelper helper;
    
    @Override
    public UICommandMetadata getMetadata(UIContext context)
@@ -64,15 +68,8 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
          userName.setValue(cp.user);
          userPassword.setValue(cp.password);
          hibernateDialect.setValue(HibernateDialect.fromClassName(cp.dialect));
-         FileResource<?> fileResource = createResource(cp.path);
-         if (fileResource != null) {
-            driverLocation.setValue(fileResource);
-            if (fileResource.exists()) {
-               File file = (File)fileResource.getUnderlyingResourceObject();
-               driverClass.setValueChoices(getDriverClassNames(file));
-               driverClass.setValue(cp.driver);
-            }
-         }
+         driverLocation.setValue(createResource(cp.path));
+         driverClass.setValue(cp.driver);
       }
    }
 
@@ -92,8 +89,8 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
    public void validate(UIValidationContext context)
    {
       super.validate(context);
-      descriptor.urls = urls;
-      descriptor.driver = driver;
+      descriptor.urls = helper.getDriverUrls(driverLocation.getValue());
+      descriptor.driverClass = driverClass.getValue();
       descriptor.connectionProperties = createConnectionProperties();
    }
    

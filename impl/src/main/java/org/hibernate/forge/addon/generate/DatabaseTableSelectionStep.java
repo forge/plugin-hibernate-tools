@@ -82,7 +82,7 @@ public class DatabaseTableSelectionStep implements UIWizardStep
       jmdc = new JDBCMetaDataConfiguration();
       jmdc.setProperties(descriptor.connectionProperties);
       jmdc.setReverseEngineeringStrategy(createReverseEngineeringStrategy());
-      helper.buildMappings(descriptor.urls, descriptor.driver, jmdc);
+      helper.buildMappings(descriptor.urls, descriptor.driverClass, jmdc);
       Iterator<Object> iterator = jmdc.getTableMappings();
       ArrayList<String> tables = new ArrayList<String>();
       while (iterator.hasNext()) {
