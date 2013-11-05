@@ -7,9 +7,6 @@
 
 package org.hibernate.forge.addon.generate;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 import javax.inject.Inject;
 
 import org.h2.Driver;
@@ -31,8 +28,6 @@ import org.jboss.forge.addon.dependencies.DependencyQuery;
 import org.jboss.forge.addon.dependencies.DependencyResolver;
 import org.jboss.forge.addon.dependencies.builder.DependencyQueryBuilder;
 import org.jboss.forge.addon.facets.FacetFactory;
-import org.jboss.forge.addon.javaee.jpa.PersistenceFacet;
-import org.jboss.forge.addon.projects.Project;
 import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.arquillian.AddonDependency;
@@ -46,6 +41,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+;
 
 @RunWith(Arquillian.class)
 public class GenerateEntitiesCommandTest

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import org.hibernate.forge.addon.connections.ConnectionProfileManager;
-import org.jboss.forge.addon.javaee.jpa.PersistenceFacet;
+import org.jboss.forge.addon.javaee.jpa.JPAFacet;
 import org.jboss.forge.addon.projects.Project;
+import org.jboss.forge.addon.projects.ProjectFactory;
 import org.jboss.forge.addon.projects.facets.MetadataFacet;
 import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
@@ -22,96 +23,86 @@ import org.jboss.forge.addon.ui.util.Categories;
 import org.jboss.forge.addon.ui.util.Metadata;
 import org.jboss.forge.addon.ui.wizard.UIWizard;
 
-public class GenerateEntitiesCommand extends AbstractProjectCommand implements UIWizard
-{
+public class GenerateEntitiesCommand extends AbstractProjectCommand implements
+		UIWizard {
 
-   private static String[] COMMAND_CATEGORY = { "Java EE", "Generate" };
-   private static String COMMAND_NAME = "Entities from Tables";
-   private static String COMMAND_DESCRIPTION = "Command to generate Java EE entities from database tables.";
+	private static String[] COMMAND_CATEGORY = { "Java EE", "Generate" };
+	private static String COMMAND_NAME = "Entities from Tables";
+	private static String COMMAND_DESCRIPTION = "Command to generate Java EE entities from database tables.";
 
-   @Inject
-   @WithAttributes(
-            label = "Target package",
-            type = InputType.JAVA_PACKAGE_PICKER,
-            description = "The name of the target package in which to generate the entities",
-            required = true)
-   private UIInput<String> targetPackage;
+	@Inject
+	private ProjectFactory projectFactory;
 
-   @Inject
-   @WithAttributes(
-            label = "Connection Profile",
-            description = "Select the database connection profile you want to use")
-   private UISelectOne<String> connectionProfile;
+	@Inject
+	@WithAttributes(label = "Target package", type = InputType.JAVA_PACKAGE_PICKER, description = "The name of the target package in which to generate the entities", required = true)
+	private UIInput<String> targetPackage;
 
-   @Override
-   public Metadata getMetadata(UIContext context)
-   {
-      return Metadata
-               .from(super.getMetadata(context), getClass())
-               .name(COMMAND_NAME)
-               .description(COMMAND_DESCRIPTION)
-               .category(Categories.create(COMMAND_CATEGORY));
-   }
+	@Inject
+	@WithAttributes(label = "Connection Profile", description = "Select the database connection profile you want to use")
+	private UISelectOne<String> connectionProfile;
 
-   @Inject
-   private ConnectionProfileManager manager;
+	@Override
+	public Metadata getMetadata(UIContext context) {
+		return Metadata.from(super.getMetadata(context), getClass())
+				.name(COMMAND_NAME).description(COMMAND_DESCRIPTION)
+				.category(Categories.create(COMMAND_CATEGORY));
+	}
 
-   @Override
-   public void initializeUI(UIBuilder builder) throws Exception
-   {
-      Project project = getSelectedProject(builder.getUIContext());
-      MetadataFacet facet = project.getFacet(MetadataFacet.class);
-      String topLevelPackage = facet.getTopLevelPackage();
-      targetPackage.setDefaultValue(topLevelPackage);
-      ArrayList<String> profileNames = new ArrayList<String>();
-      profileNames.add("");
-      profileNames.addAll(manager.loadConnectionProfiles().keySet());
-      connectionProfile.setValueChoices(profileNames);
-      connectionProfile.setValue("");
-      builder.add(targetPackage).add(connectionProfile);
-   }
+	@Inject
+	private ConnectionProfileManager manager;
 
-   @Inject
-   private GenerateEntitiesCommandDescriptor descriptor;
+	@Override
+	public void initializeUI(UIBuilder builder) throws Exception {
+		Project project = getSelectedProject(builder.getUIContext());
+		MetadataFacet facet = project.getFacet(MetadataFacet.class);
+		String topLevelPackage = facet.getTopLevelPackage();
+		targetPackage.setDefaultValue(topLevelPackage);
+		ArrayList<String> profileNames = new ArrayList<String>();
+		profileNames.add("");
+		profileNames.addAll(manager.loadConnectionProfiles().keySet());
+		connectionProfile.setValueChoices(profileNames);
+		connectionProfile.setValue("");
+		builder.add(targetPackage).add(connectionProfile);
+	}
 
-   @Override
-   public Result execute(UIContext context)
-   {
-      return Results.success();
-   }
+	@Inject
+	private GenerateEntitiesCommandDescriptor descriptor;
 
-   protected String getParameters()
-   {
-      return targetPackage.getValue();
-   }
+	@Override
+	public Result execute(UIContext context) {
+		return Results.success();
+	}
 
-   @Override
-   protected boolean isProjectRequired()
-   {
-      return true;
-   }
+	protected String getParameters() {
+		return targetPackage.getValue();
+	}
 
-   @Override
-   public boolean isEnabled(UIContext context)
-   {
-      Project project = getSelectedProject(context);
-      if (project != null)
-      {
-         return project.hasFacet(PersistenceFacet.class) && super.isEnabled(context);
-      }
-      else
-      {
-         return false;
-      }
-   }
+	@Override
+	protected boolean isProjectRequired() {
+		return true;
+	}
 
-   @Override
-   public NavigationResult next(UIContext context) throws Exception
-   {
-      descriptor.targetPackage = targetPackage.getValue();
-      descriptor.connectionProfileName = connectionProfile.getValue();
-      descriptor.selectedProject = getSelectedProject(context);
-      return Results.navigateTo(ConnectionProfileDetailsStep.class);
-   }
+	@Override
+	public boolean isEnabled(UIContext context) {
+		Project project = getSelectedProject(context);
+		if (project != null) {
+			return project.hasFacet(JPAFacet.class) && super.isEnabled(context);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public NavigationResult next(UIContext context) throws Exception {
+		descriptor.targetPackage = targetPackage.getValue();
+		descriptor.connectionProfileName = connectionProfile.getValue();
+		descriptor.selectedProject = getSelectedProject(context);
+		return Results.navigateTo(ConnectionProfileDetailsStep.class);
+	}
+
+	@Override
+	protected ProjectFactory getProjectFactory() {
+		return projectFactory;
+	}
 
 }
