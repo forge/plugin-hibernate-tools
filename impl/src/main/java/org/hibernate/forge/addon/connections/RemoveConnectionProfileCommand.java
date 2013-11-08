@@ -23,7 +23,7 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    private static final String COMMAND_DESCRIPTION = "Command to remove a database connectin profile.";
 
    @Inject
-   private ConnectionProfileManager connectionProfileManager;
+   private ConnectionProfileManagerProvider provider;
 
    private Map<String, ConnectionProfile> profiles;
 
@@ -46,7 +46,7 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    @Override
    public void initializeUI(UIBuilder builder) throws Exception
    {
-      profiles = connectionProfileManager.loadConnectionProfiles();
+      profiles = provider.getConnectionProfileManager().loadConnectionProfiles();
       names.setValueChoices(profiles.keySet());
       builder.add(names);
    }
@@ -61,7 +61,7 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
          profiles.remove(name);
          sb.append(name + ", ");
       }
-      connectionProfileManager.saveConnectionProfiles(profiles.values());
+      provider.getConnectionProfileManager().saveConnectionProfiles(profiles.values());
       if (sb.length() > 2)
       {
          sb.setLength(sb.length() - 2);

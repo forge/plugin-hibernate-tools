@@ -23,7 +23,7 @@ public class CreateConnectionProfileCommand extends ConnectionProfileDetailsPage
    private static final String COMMAND_DESCRIPTION = "Command to create a database connectin profile.";
 
    @Inject
-   private ConnectionProfileManager connectionProfileHelper;
+   private ConnectionProfileManagerProvider provider;
 
    @Inject
    @WithAttributes(
@@ -53,7 +53,7 @@ public class CreateConnectionProfileCommand extends ConnectionProfileDetailsPage
    public Result execute(UIExecutionContext context) throws Exception
    {
       Map<String, ConnectionProfile> connectionProfiles =
-               connectionProfileHelper.loadConnectionProfiles();
+               provider.getConnectionProfileManager().loadConnectionProfiles();
       ConnectionProfile connectionProfile = new ConnectionProfile();
       connectionProfile.name = name.getValue();
       connectionProfile.dialect = hibernateDialect.getValue().getClassName();
@@ -62,7 +62,7 @@ public class CreateConnectionProfileCommand extends ConnectionProfileDetailsPage
       connectionProfile.url = jdbcUrl.getValue();
       connectionProfile.user = userName.getValue();
       connectionProfiles.put(name.getValue(), connectionProfile);
-      connectionProfileHelper.saveConnectionProfiles(connectionProfiles.values());
+      provider.getConnectionProfileManager().saveConnectionProfiles(connectionProfiles.values());
       return Results.success(
                "Connection profile " +
                         connectionProfile.name +
