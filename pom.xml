@@ -104,12 +104,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-<!--  <repositories>
-    <repository>
-      <id>JBOSS_NEXUS</id>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-  </repositories> --> 
   <build>
     <plugins>
       <plugin>
