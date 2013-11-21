@@ -157,8 +157,9 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    {     
       final Collection<String> selectedTableNames = getSelectedTableNames();     
       JavaSourceFacet java = descriptor.selectedProject.getFacet(JavaSourceFacet.class);
-      POJOExporter pj = new POJOExporter(jmdc, java.getSourceFolder()
+      POJOExporter pj = new POJOExporter(jmdc, java.getSourceDirectory()
                .getUnderlyingResourceObject()) {
+         @Override
          @SuppressWarnings("rawtypes")
          protected void exportPOJO(Map additionalContext, POJOClass element) {
             if (isSelected(selectedTableNames, element)) {
