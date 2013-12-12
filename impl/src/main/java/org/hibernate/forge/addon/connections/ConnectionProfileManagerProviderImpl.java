@@ -1,7 +1,9 @@
 package org.hibernate.forge.addon.connections;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class ConnectionProfileManagerProviderImpl implements
 		ConnectionProfileManagerProvider {
 	
