@@ -14,6 +14,7 @@ import org.jboss.forge.addon.resource.FileResource;
 import org.jboss.forge.addon.resource.ResourceFactory;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
 import org.jboss.forge.addon.ui.result.NavigationResult;
@@ -74,7 +75,7 @@ public class ConnectionProfileDetailsStep extends ConnectionProfileDetailsPage i
    }
 
    @Override
-   public Result execute(UIContext context)
+   public Result execute(UIExecutionContext context)
    { 
       return Results.success();
    }

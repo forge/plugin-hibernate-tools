@@ -24,6 +24,7 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass;
 import org.jboss.forge.addon.parser.java.facets.JavaSourceFacet;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.context.UIValidationContext;
 import org.jboss.forge.addon.ui.input.UISelectMany;
 import org.jboss.forge.addon.ui.metadata.UICommandMetadata;
@@ -98,7 +99,7 @@ public class DatabaseTableSelectionStep implements UIWizardStep
    }
 
    @Override
-   public Result execute(UIContext context)
+   public Result execute(UIExecutionContext context)
    { 
       exportSelectedEntities();
       return Results.success();

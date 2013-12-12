@@ -12,6 +12,7 @@ import org.jboss.forge.addon.projects.facets.MetadataFacet;
 import org.jboss.forge.addon.projects.ui.AbstractProjectCommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.hints.InputType;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.input.UISelectOne;
@@ -69,7 +70,7 @@ public class GenerateEntitiesCommand extends AbstractProjectCommand implements
 	private GenerateEntitiesCommandDescriptor descriptor;
 
 	@Override
-	public Result execute(UIContext context) {
+	public Result execute(UIExecutionContext context) {
 		return Results.success();
 	}
 

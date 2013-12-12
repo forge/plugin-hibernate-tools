@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.jboss.forge.addon.ui.UICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.input.UIInput;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.Result;
@@ -49,7 +50,7 @@ public class CreateConnectionProfileCommand extends ConnectionProfileDetailsPage
    }
 
    @Override
-   public Result execute(UIContext context) throws Exception
+   public Result execute(UIExecutionContext context) throws Exception
    {
       Map<String, ConnectionProfile> connectionProfiles =
                connectionProfileHelper.loadConnectionProfiles();

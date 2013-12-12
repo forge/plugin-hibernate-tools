@@ -7,6 +7,7 @@ import javax.inject.Inject;
 import org.jboss.forge.addon.ui.AbstractUICommand;
 import org.jboss.forge.addon.ui.context.UIBuilder;
 import org.jboss.forge.addon.ui.context.UIContext;
+import org.jboss.forge.addon.ui.context.UIExecutionContext;
 import org.jboss.forge.addon.ui.input.UISelectMany;
 import org.jboss.forge.addon.ui.metadata.WithAttributes;
 import org.jboss.forge.addon.ui.result.Result;
@@ -51,7 +52,7 @@ public class RemoveConnectionProfileCommand extends AbstractUICommand
    }
 
    @Override
-   public Result execute(UIContext context) throws Exception
+   public Result execute(UIExecutionContext context) throws Exception
    {
       Iterable<String> selection = names.getValue();
       StringBuffer sb = new StringBuffer();
