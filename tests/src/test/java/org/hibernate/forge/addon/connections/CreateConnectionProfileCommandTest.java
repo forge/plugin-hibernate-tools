@@ -19,11 +19,12 @@ import org.jboss.forge.addon.dependencies.DependencyQuery;
 import org.jboss.forge.addon.dependencies.DependencyResolver;
 import org.jboss.forge.addon.dependencies.builder.DependencyQueryBuilder;
 import org.jboss.forge.addon.resource.FileResource;
+import org.jboss.forge.addon.ui.controller.CommandController;
 import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
 import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
-import org.jboss.forge.ui.test.CommandTester;
+import org.jboss.forge.ui.test.UITestHarness;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,8 +64,8 @@ public class CreateConnectionProfileCommandTest
    private ConnectionProfileManager manager;
    
    @Inject
-   private CommandTester<CreateConnectionProfileCommand> command;
-   
+   private UITestHarness testHarness;
+
    @Inject
    private DependencyResolver resolver;
    
@@ -82,7 +83,8 @@ public class CreateConnectionProfileCommandTest
    
    @Test
    public void testCreateConnectionProfileCommand() throws Exception {
-      command.launch();
+	  CommandController command = testHarness.createCommandController(CreateConnectionProfileCommand.class);
+	  command.initialize();
       command.setValueFor("name", "test");
       command.setValueFor("jdbcUrl", "jdbc:h2:~/app-root/data/sakila");
       command.setValueFor("userName", "sa");
@@ -90,7 +92,7 @@ public class CreateConnectionProfileCommandTest
       command.setValueFor("hibernateDialect", HibernateDialect.fromClassName("org.hibernate.dialect.H2Dialect"));
       command.setValueFor("driverLocation", resolveH2DriverJarResource());
       command.setValueFor("driverClass", "org.h2.Driver");
-      command.execute(null);
+      command.execute();
       Map<String, ConnectionProfile> profiles = manager.loadConnectionProfiles();
       Assert.assertEquals(2, profiles.size());
       ConnectionProfile profile = profiles.get("test");

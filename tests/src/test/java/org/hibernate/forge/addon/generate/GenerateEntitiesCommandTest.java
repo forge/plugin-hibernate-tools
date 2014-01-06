@@ -34,7 +34,7 @@ import org.jboss.forge.arquillian.AddonDependency;
 import org.jboss.forge.arquillian.Dependencies;
 import org.jboss.forge.arquillian.archive.ForgeArchive;
 import org.jboss.forge.furnace.repositories.AddonDependencyEntry;
-import org.jboss.forge.ui.test.WizardTester;
+import org.jboss.forge.ui.test.UITestHarness;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.junit.After;
 import org.junit.Assert;
@@ -102,9 +102,12 @@ public class GenerateEntitiesCommandTest
    @Inject 
    private FacetFactory facetFactory;
    
-   @Inject
-   private WizardTester<GenerateEntitiesCommand> wizard;
+//   @Inject
+//   private WizardTester<GenerateEntitiesCommand> wizard;
    
+   @Inject
+   private UITestHarness testHarness;
+
    @Inject
    private DependencyResolver resolver;
 

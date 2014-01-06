@@ -1,6 +1,7 @@
 package org.hibernate.forge.addon.connections;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Driver;
@@ -123,12 +124,13 @@ public class ConnectionProfileDetailsPage
       ArrayList<String> result = new ArrayList<String>();
       FileResource<?> resource = driverLocation.getValue();
       if (resource != null && resource.exists()) {
+    	 JarFile jarFile = null;
          try {
             File file = (File)resource.getUnderlyingResourceObject();
             URL[] urls = new URL[] { file.toURI().toURL() };
             URLClassLoader classLoader = URLClassLoader.newInstance(urls);
             Class<?> driverClass = classLoader.loadClass(Driver.class.getName());
-            JarFile jarFile = new JarFile(file);
+            jarFile = new JarFile(file);
             Enumeration<JarEntry> iter = jarFile.entries();
             while (iter.hasMoreElements()) {
                JarEntry entry = iter.nextElement();
@@ -150,6 +152,14 @@ public class ConnectionProfileDetailsPage
             }
          } catch (Exception e) {
             // ignore and return an empty list
+         } finally {
+        	 if (jarFile != null) {
+        		 try {
+					jarFile.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+        	 }
          }
       }
       return result;
