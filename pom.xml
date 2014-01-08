@@ -17,8 +17,8 @@
    </modules>
 
    <properties>
-      <version.furnace>2.0.0.Beta4</version.furnace>
-      <version.forge>2.0.0.Beta4</version.forge>
+      <version.furnace>2.0.0-SNAPSHOT</version.furnace>
+      <version.forge>2.0.0-SNAPSHOT</version.forge>
       <hibernate.tools.version>3.4.0.CR2</hibernate.tools.version>
       <h2database.version>1.3.167</h2database.version>
    </properties>
