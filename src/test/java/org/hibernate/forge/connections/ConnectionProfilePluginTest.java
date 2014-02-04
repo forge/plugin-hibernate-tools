@@ -23,7 +23,7 @@ public class ConnectionProfilePluginTest extends AbstractShellTest {
    private static final String BEANS_XML = 
             "<beans>                                                            " +
             "  <alternatives>                                                   " +
-            "    <class>org.hibernate.forge.database.MockConnectionProfileHelper</class>" +
+            "    <class>org.hibernate.forge.connections.MockConnectionProfileHelper</class>" +
             "  </alternatives>                                                  " +
             "</beans>                                                           ";    
    

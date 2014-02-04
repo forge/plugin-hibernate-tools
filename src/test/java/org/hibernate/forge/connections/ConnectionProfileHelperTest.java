@@ -29,7 +29,7 @@ public class ConnectionProfileHelperTest
    private static final String BEANS_XML =
             "<beans>                                                            " +
             "  <alternatives>                                                   " +
-            "    <class>org.hibernate.forge.database.MockConfiguration</class>" +
+            "    <class>org.hibernate.forge.connections.MockConfiguration</class>" +
             "  </alternatives>                                                  " +
             "</beans>                                                           ";
 
